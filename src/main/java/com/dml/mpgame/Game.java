@@ -12,25 +12,27 @@ import java.util.Map;
 public class Game {
 
 	private String id;
-	private GameState state = GameState.waitingStart;
+	private GameState state;
 	private String createPlayerId;
 	private Map<String, GamePlayer> idPlayerMap = new HashMap<>();
 	private FinishVote finishVote;
+
+	public void create(String id, String createPlayerId) {
+		this.id = id;
+		this.createPlayerId = createPlayerId;
+		GamePlayer player = new GamePlayer();
+		player.setId(createPlayerId);
+		player.setState(GamePlayerState.joined);
+		idPlayerMap.put(createPlayerId, player);
+		state = GameState.waitingStart;
+	}
 
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public String getCreatePlayerId() {
 		return createPlayerId;
-	}
-
-	public void setCreatePlayerId(String createPlayerId) {
-		this.createPlayerId = createPlayerId;
 	}
 
 }

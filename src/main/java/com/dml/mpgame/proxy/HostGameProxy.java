@@ -1,6 +1,8 @@
 package com.dml.mpgame.proxy;
 
 import com.dml.mpgame.Game;
+import com.dml.mpgame.GamePlayerNotFoundException;
+import com.dml.mpgame.GameState;
 
 /**
  * 主机游戏代理 <br/>
@@ -17,6 +19,21 @@ public class HostGameProxy extends GameProxy {
 
 	public HostGameProxy(Game game) {
 		super(game);
+	}
+
+	@Override
+	public void leave(String playerId) throws GamePlayerNotFoundException {
+		GameState state = game.getState();
+		String createPlayerId = game.getCreatePlayerId();
+		if (state.equals(GameState.waitingStart)) {
+			if (playerId.equals(createPlayerId)) {
+				game.leave(playerId);
+			} else {
+				game.quit(playerId);
+			}
+		} else {
+			game.leave(playerId);
+		}
 	}
 
 }

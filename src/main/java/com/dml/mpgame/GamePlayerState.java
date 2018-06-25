@@ -7,5 +7,5 @@ package com.dml.mpgame;
  *
  */
 public enum GamePlayerState {
-	joined, readyToStart, playing, finished
+	joined, leave, readyToStart, playing, finished
 }

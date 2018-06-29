@@ -19,20 +19,29 @@ public class Game {
 
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
+	private GameJoinStrategy gameJoinStrategy;
 
 	private FinishVote finishVote;
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
-		GamePlayer player = new GamePlayer();
-		player.setId(createPlayerId);
-		player.setState(GamePlayerState.joined);
-		idPlayerMap.put(createPlayerId, player);
+		newPlayer(createPlayerId);
 		state = GameState.waitingStart;
+	}
+
+	public void newPlayer(String playerId) {
+		GamePlayer player = new GamePlayer();
+		player.setId(playerId);
+		player.setState(GamePlayerState.joined);
+		idPlayerMap.put(playerId, player);
 	}
 
 	public int playerCounts() {
 		return idPlayerMap.size();
+	}
+
+	public void join(String playerId) throws Exception {
+		gameJoinStrategy.join(playerId, this);
 	}
 
 	public void leave(String playerId) throws Exception {
@@ -125,6 +134,14 @@ public class Game {
 
 	public void setReadyStrategy(GameReadyStrategy readyStrategy) {
 		this.readyStrategy = readyStrategy;
+	}
+
+	public GameJoinStrategy getGameJoinStrategy() {
+		return gameJoinStrategy;
+	}
+
+	public void setGameJoinStrategy(GameJoinStrategy gameJoinStrategy) {
+		this.gameJoinStrategy = gameJoinStrategy;
 	}
 
 	public FinishVote getFinishVote() {

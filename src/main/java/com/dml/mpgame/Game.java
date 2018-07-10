@@ -41,6 +41,9 @@ public class Game {
 	}
 
 	public void join(String playerId) throws Exception {
+		if (idPlayerMap.containsKey(playerId)) {
+			throw new GamePlayerAlreadyInGameException();
+		}
 		gameJoinStrategy.join(playerId, this);
 	}
 

@@ -33,6 +33,7 @@ public class Game {
 		GamePlayer player = new GamePlayer();
 		player.setId(playerId);
 		player.setState(GamePlayerState.joined);
+		player.setOnlineState(GamePlayerOnlineState.online);
 		idPlayerMap.put(playerId, player);
 	}
 
@@ -51,6 +52,10 @@ public class Game {
 		leaveStrategy.leave(playerId, this);
 	}
 
+	public void back(String playerId) throws Exception {
+		updatePlayerOnlineState(playerId, GamePlayerOnlineState.online);
+	}
+
 	public void ready(String playerId) throws Exception {
 		readyStrategy.ready(playerId, this);
 	}
@@ -61,6 +66,15 @@ public class Game {
 			throw new GamePlayerNotFoundException();
 		}
 		player.setState(playerState);
+	}
+
+	public void updatePlayerOnlineState(String playerId, GamePlayerOnlineState onlineState)
+			throws GamePlayerNotFoundException {
+		GamePlayer player = idPlayerMap.get(playerId);
+		if (player == null) {
+			throw new GamePlayerNotFoundException();
+		}
+		player.setOnlineState(onlineState);
 	}
 
 	public void removePlayer(String playerId) throws GamePlayerNotFoundException {

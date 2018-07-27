@@ -9,6 +9,7 @@ package com.dml.mpgame;
 public class GamePlayer {
 	private String id;
 	private GamePlayerState state;
+	private GamePlayerOnlineState onlineState;
 
 	public String getId() {
 		return id;
@@ -24,6 +25,14 @@ public class GamePlayer {
 
 	public void setState(GamePlayerState state) {
 		this.state = state;
+	}
+
+	public GamePlayerOnlineState getOnlineState() {
+		return onlineState;
+	}
+
+	public void setOnlineState(GamePlayerOnlineState onlineState) {
+		this.onlineState = onlineState;
 	}
 
 }

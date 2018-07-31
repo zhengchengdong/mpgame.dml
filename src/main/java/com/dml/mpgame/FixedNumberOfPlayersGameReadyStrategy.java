@@ -2,14 +2,14 @@ package com.dml.mpgame;
 
 public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy {
 
+	private int fixedNumberOfPlayers;
+
 	public FixedNumberOfPlayersGameReadyStrategy() {
 	}
 
 	public FixedNumberOfPlayersGameReadyStrategy(int fixedNumberOfPlayers) {
 		this.fixedNumberOfPlayers = fixedNumberOfPlayers;
 	}
-
-	private int fixedNumberOfPlayers;
 
 	@Override
 	public void ready(String playerId, Game game) throws Exception {

@@ -48,8 +48,8 @@ public class Game {
 		gameJoinStrategy.join(playerId, this);
 	}
 
-	public void leave(String playerId) throws Exception {
-		leaveStrategy.leave(playerId, this);
+	public GameValueObject leave(String playerId) throws Exception {
+		return leaveStrategy.leave(playerId, this);
 	}
 
 	public void back(String playerId) throws Exception {

@@ -12,7 +12,7 @@ public class HostGameLeaveStrategy implements GameLeaveStrategy {
 	}
 
 	@Override
-	public void leave(String playerId, Game game) throws Exception {
+	public GameValueObject leave(String playerId, Game game) throws Exception {
 
 		if (game.getState().equals(GameState.waitingStart)) {// 准备阶段特殊处理
 			if (playerId.equals(hostPlayerId)) {// 主机玩家正常离开
@@ -23,6 +23,7 @@ public class HostGameLeaveStrategy implements GameLeaveStrategy {
 		} else {// 开玩之后一切正常处理
 			game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);
 		}
+		return new GameValueObject(game);
 
 	}
 

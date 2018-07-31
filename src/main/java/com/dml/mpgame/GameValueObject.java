@@ -17,6 +17,7 @@ public class GameValueObject {
 			GamePlayer copy = new GamePlayer();
 			copy.setId(player.getId());
 			copy.setState(player.getState());
+			copy.setOnlineState(player.getOnlineState());
 			players.add(copy);
 		});
 	}

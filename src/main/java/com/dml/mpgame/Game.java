@@ -109,6 +109,13 @@ public class Game {
 		state = GameState.playing;
 	}
 
+	public void finish() {
+		for (GamePlayer player : idPlayerMap.values()) {
+			player.setState(GamePlayerState.finished);
+		}
+		state = GameState.finished;
+	}
+
 	public List<String> allPlayerIds() {
 		return new ArrayList<>(idPlayerMap.keySet());
 	}

@@ -41,23 +41,24 @@ public class Game {
 		return idPlayerMap.size();
 	}
 
-	public void join(String playerId) throws Exception {
+	public GameValueObject join(String playerId) throws Exception {
 		if (idPlayerMap.containsKey(playerId)) {
 			throw new GamePlayerAlreadyInGameException();
 		}
-		gameJoinStrategy.join(playerId, this);
+		return gameJoinStrategy.join(playerId, this);
 	}
 
 	public GameValueObject leave(String playerId) throws Exception {
 		return leaveStrategy.leave(playerId, this);
 	}
 
-	public void back(String playerId) throws Exception {
+	public GameValueObject back(String playerId) throws Exception {
 		updatePlayerOnlineState(playerId, GamePlayerOnlineState.online);
+		return new GameValueObject(this);
 	}
 
-	public void ready(String playerId) throws Exception {
-		readyStrategy.ready(playerId, this);
+	public GameValueObject ready(String playerId) throws Exception {
+		return readyStrategy.ready(playerId, this);
 	}
 
 	public void updatePlayerState(String playerId, GamePlayerState playerState) throws GamePlayerNotFoundException {
@@ -109,11 +110,12 @@ public class Game {
 		state = GameState.playing;
 	}
 
-	public void finish() {
+	public GameValueObject finish() {
 		for (GamePlayer player : idPlayerMap.values()) {
 			player.setState(GamePlayerState.finished);
 		}
 		state = GameState.finished;
+		return new GameValueObject(this);
 	}
 
 	public List<String> allPlayerIds() {

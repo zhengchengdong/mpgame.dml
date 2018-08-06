@@ -22,6 +22,12 @@ public class GameValueObject {
 		});
 	}
 
+	public List<String> allPlayerIds() {
+		List<String> allPlayerIds = new ArrayList<>();
+		players.forEach((player) -> allPlayerIds.add(player.getId()));
+		return allPlayerIds;
+	}
+
 	public String getId() {
 		return id;
 	}

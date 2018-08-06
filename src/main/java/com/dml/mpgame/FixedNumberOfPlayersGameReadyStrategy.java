@@ -12,7 +12,7 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 	}
 
 	@Override
-	public void ready(String playerId, Game game) throws Exception {
+	public GameValueObject ready(String playerId, Game game) throws Exception {
 
 		if (!game.getState().equals(GameState.waitingStart)) {
 			throw new IllegalOperationException();
@@ -28,7 +28,7 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 				game.start();
 			}
 		}
-
+		return new GameValueObject(game);
 	}
 
 }

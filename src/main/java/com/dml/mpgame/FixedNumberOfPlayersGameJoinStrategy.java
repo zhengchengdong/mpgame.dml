@@ -12,11 +12,12 @@ public class FixedNumberOfPlayersGameJoinStrategy implements GameJoinStrategy {
 	}
 
 	@Override
-	public void join(String playerId, Game game) throws Exception {
+	public GameValueObject join(String playerId, Game game) throws Exception {
 		if (game.playerCounts() == fixedNumberOfPlayers) {
 			throw new CanNotJoinMorePlayersException();
 		}
 		game.newPlayer(playerId);
+		return new GameValueObject(game);
 	}
 
 }

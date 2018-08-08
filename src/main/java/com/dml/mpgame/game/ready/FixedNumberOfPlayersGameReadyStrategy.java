@@ -1,4 +1,10 @@
-package com.dml.mpgame;
+package com.dml.mpgame.game.ready;
+
+import com.dml.mpgame.game.Game;
+import com.dml.mpgame.game.GamePlayerState;
+import com.dml.mpgame.game.GameState;
+import com.dml.mpgame.game.GameValueObject;
+import com.dml.mpgame.game.IllegalOperationException;
 
 public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy {
 

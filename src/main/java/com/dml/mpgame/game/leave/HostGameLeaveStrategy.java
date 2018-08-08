@@ -1,4 +1,9 @@
-package com.dml.mpgame;
+package com.dml.mpgame.game.leave;
+
+import com.dml.mpgame.game.Game;
+import com.dml.mpgame.game.GamePlayerOnlineState;
+import com.dml.mpgame.game.GameState;
+import com.dml.mpgame.game.GameValueObject;
 
 public class HostGameLeaveStrategy implements GameLeaveStrategy {
 

@@ -1,4 +1,7 @@
-package com.dml.mpgame;
+package com.dml.mpgame.game.ready;
+
+import com.dml.mpgame.game.Game;
+import com.dml.mpgame.game.GameValueObject;
 
 public interface GameReadyStrategy {
 

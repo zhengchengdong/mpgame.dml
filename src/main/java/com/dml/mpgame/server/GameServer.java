@@ -1,12 +1,29 @@
-package com.dml.mpgame;
+package com.dml.mpgame.server;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dml.mpgame.game.Game;
+import com.dml.mpgame.game.GameNotFoundException;
+import com.dml.mpgame.game.GameValueObject;
+import com.dml.mpgame.game.PlayerNotInGameException;
+import com.dml.mpgame.game.finish.GameFinishVote;
+import com.dml.mpgame.game.finish.GameFinishVoteValueObject;
+import com.dml.mpgame.game.finish.GameIsNotVoteToFinishException;
+import com.dml.mpgame.game.finish.VoteAlreadyExistsException;
+import com.dml.mpgame.game.finish.VoteCalculator;
+import com.dml.mpgame.game.finish.VoteOption;
+import com.dml.mpgame.game.finish.VoteResult;
+import com.dml.mpgame.game.join.GameJoinStrategy;
+import com.dml.mpgame.game.leave.GameLeaveStrategy;
+import com.dml.mpgame.game.ready.GameReadyStrategy;
+
 public class GameServer {
+
 	private String id;
 	private Map<String, Game> gameIdGameMap = new HashMap<>();
+	private Map<String, GameFinishVote> gameIdFinishVoteMap = new HashMap<>();
 
 	/**
 	 * 一台服务器对于同一个用户（一个socket）同时只能玩一场游戏。
@@ -90,6 +107,46 @@ public class GameServer {
 
 	public String findBindGameId(String playerId) {
 		return playerIdGameIdMap.get(playerId);
+	}
+
+	/**
+	 * 发起结束投票.发起人认为是投同意结束
+	 */
+	public GameFinishVoteValueObject startFinishVote(String playerId, VoteCalculator voteCalculator) throws Exception {
+		String gameId = playerIdGameIdMap.get(playerId);
+		if (gameId == null) {
+			throw new PlayerNotInGameException();
+		}
+		GameFinishVote vote = gameIdFinishVoteMap.get(gameId);
+		if (vote != null) {
+			throw new VoteAlreadyExistsException();
+		}
+		vote = new GameFinishVote(gameId, voteCalculator);
+
+		return voteToFinishGame(playerId, VoteOption.yes);
+
+	}
+
+	public GameFinishVoteValueObject voteToFinishGame(String playerId, VoteOption option) throws Exception {
+		String gameId = playerIdGameIdMap.get(playerId);
+		if (gameId == null) {
+			throw new PlayerNotInGameException();
+		}
+		GameFinishVote vote = gameIdFinishVoteMap.get(gameId);
+		if (vote == null) {
+			throw new GameIsNotVoteToFinishException();
+		}
+		vote.vote(playerId, option);
+		Game game = gameIdGameMap.get(gameId);
+		vote.calculateResult(game);
+		VoteResult voteResult = vote.getResult();
+		if (voteResult != null) {// 出结果了
+			if (voteResult.equals(VoteResult.yes)) {// 通过
+				finish(gameId);
+			}
+			gameIdFinishVoteMap.remove(gameId);
+		}
+		return new GameFinishVoteValueObject(vote);
 	}
 
 	public String getId() {

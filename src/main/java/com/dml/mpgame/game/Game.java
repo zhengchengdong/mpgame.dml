@@ -1,9 +1,13 @@
-package com.dml.mpgame;
+package com.dml.mpgame.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.dml.mpgame.game.join.GameJoinStrategy;
+import com.dml.mpgame.game.leave.GameLeaveStrategy;
+import com.dml.mpgame.game.ready.GameReadyStrategy;
 
 /**
  * 一次游戏
@@ -20,8 +24,6 @@ public class Game {
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy gameJoinStrategy;
-
-	private FinishVote finishVote;
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
@@ -122,6 +124,10 @@ public class Game {
 		return new ArrayList<>(idPlayerMap.keySet());
 	}
 
+	public GamePlayer findPlayer(String playerId) {
+		return idPlayerMap.get(playerId);
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -168,14 +174,6 @@ public class Game {
 
 	public void setGameJoinStrategy(GameJoinStrategy gameJoinStrategy) {
 		this.gameJoinStrategy = gameJoinStrategy;
-	}
-
-	public FinishVote getFinishVote() {
-		return finishVote;
-	}
-
-	public void setFinishVote(FinishVote finishVote) {
-		this.finishVote = finishVote;
 	}
 
 }

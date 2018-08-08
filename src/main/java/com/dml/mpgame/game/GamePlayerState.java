@@ -1,4 +1,4 @@
-package com.dml.mpgame;
+package com.dml.mpgame.game;
 
 /**
  * 玩家状态

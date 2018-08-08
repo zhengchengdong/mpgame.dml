@@ -1,4 +1,4 @@
-package com.dml.mpgame;
+package com.dml.mpgame.game;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -89,6 +89,7 @@ public class GameServer {
 		GameValueObject gameValueObject = game.finish();
 		gameIdGameMap.remove(gameId);
 		game.allPlayerIds().forEach((pid) -> playerIdGameIdMap.remove(pid));
+		gameIdFinishVoteMap.remove(gameId);
 		return gameValueObject;
 	}
 
@@ -137,6 +138,23 @@ public class GameServer {
 			throw new GameIsNotVoteToFinishException();
 		}
 		vote.vote(playerId, option);
+		Game game = gameIdGameMap.get(gameId);
+		vote.calculateResult(game);
+		VoteResult voteResult = vote.getResult();
+		if (voteResult != null) {// 出结果了
+			if (voteResult.equals(VoteResult.yes)) {// 通过
+				finish(gameId);
+			}
+			gameIdFinishVoteMap.remove(gameId);
+		}
+		return new GameFinishVoteValueObject(vote);
+	}
+
+	public GameFinishVoteValueObject calculateVoteResultToFinishGame(String gameId) throws Exception {
+		GameFinishVote vote = gameIdFinishVoteMap.get(gameId);
+		if (vote == null) {
+			throw new GameIsNotVoteToFinishException();
+		}
 		Game game = gameIdGameMap.get(gameId);
 		vote.calculateResult(game);
 		VoteResult voteResult = vote.getResult();

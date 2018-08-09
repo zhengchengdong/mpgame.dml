@@ -20,4 +20,28 @@ public class GameFinishVoteValueObject {
 		result = vote.getResult();
 	}
 
+	public String getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
+	}
+
+	public Map<String, VoteOption> getPlayerIdVoteOptionMap() {
+		return playerIdVoteOptionMap;
+	}
+
+	public void setPlayerIdVoteOptionMap(Map<String, VoteOption> playerIdVoteOptionMap) {
+		this.playerIdVoteOptionMap = playerIdVoteOptionMap;
+	}
+
+	public VoteResult getResult() {
+		return result;
+	}
+
+	public void setResult(VoteResult result) {
+		this.result = result;
+	}
+
 }

@@ -123,6 +123,7 @@ public class GameServer {
 			throw new VoteAlreadyExistsException();
 		}
 		vote = new GameFinishVote(gameId, voteCalculator);
+		gameIdFinishVoteMap.put(gameId, vote);
 
 		return voteToFinishGame(playerId, VoteOption.yes);
 

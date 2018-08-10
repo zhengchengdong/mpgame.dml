@@ -168,6 +168,14 @@ public class GameServer {
 		return new GameFinishVoteValueObject(vote);
 	}
 
+	public GameValueObject findGame(String gameId) throws Exception {
+		Game game = gameIdGameMap.get(gameId);
+		if (game == null) {
+			throw new GameNotFoundException();
+		}
+		return new GameValueObject(game);
+	}
+
 	public String getId() {
 		return id;
 	}

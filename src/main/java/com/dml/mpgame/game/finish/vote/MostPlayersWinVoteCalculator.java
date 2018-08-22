@@ -1,4 +1,4 @@
-package com.dml.mpgame.game.finish;
+package com.dml.mpgame.game.finish.vote;
 
 import java.util.List;
 

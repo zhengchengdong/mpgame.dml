@@ -1,4 +1,4 @@
-package com.dml.mpgame.game.finish;
+package com.dml.mpgame.game.finish.vote;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,8 +6,6 @@ import java.util.Map;
 import com.dml.mpgame.game.Game;
 
 public class GameFinishVote {
-
-	private String gameId;
 
 	private VoteCalculator calculator;
 
@@ -18,8 +16,7 @@ public class GameFinishVote {
 	public GameFinishVote() {
 	}
 
-	public GameFinishVote(String gameId, VoteCalculator calculator) {
-		this.gameId = gameId;
+	public GameFinishVote(VoteCalculator calculator) {
 		this.calculator = calculator;
 	}
 
@@ -39,14 +36,6 @@ public class GameFinishVote {
 
 	public VoteOption findPlayerVoteOption(String playerId) {
 		return playerIdVoteOptionMap.get(playerId);
-	}
-
-	public String getGameId() {
-		return gameId;
-	}
-
-	public void setGameId(String gameId) {
-		this.gameId = gameId;
 	}
 
 	public VoteCalculator getCalculator() {

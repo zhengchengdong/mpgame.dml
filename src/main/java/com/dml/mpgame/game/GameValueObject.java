@@ -3,11 +3,14 @@ package com.dml.mpgame.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dml.mpgame.game.finish.GameFinishStrategyValueObject;
+
 public class GameValueObject {
 
 	private String id;
 	private GameState state;
 	private List<GamePlayer> players;
+	private GameFinishStrategyValueObject finishStrategy;
 
 	public GameValueObject(Game game) {
 		id = game.getId();
@@ -20,6 +23,7 @@ public class GameValueObject {
 			copy.setOnlineState(player.getOnlineState());
 			players.add(copy);
 		});
+		finishStrategy = game.getGameFinishStrategy().generateValueObject();
 	}
 
 	public List<String> allPlayerIds() {
@@ -50,6 +54,14 @@ public class GameValueObject {
 
 	public void setPlayers(List<GamePlayer> players) {
 		this.players = players;
+	}
+
+	public GameFinishStrategyValueObject getFinishStrategy() {
+		return finishStrategy;
+	}
+
+	public void setFinishStrategy(GameFinishStrategyValueObject finishStrategy) {
+		this.finishStrategy = finishStrategy;
 	}
 
 }

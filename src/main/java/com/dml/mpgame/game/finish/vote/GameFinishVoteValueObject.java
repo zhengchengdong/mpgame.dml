@@ -1,11 +1,9 @@
-package com.dml.mpgame.game.finish;
+package com.dml.mpgame.game.finish.vote;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameFinishVoteValueObject {
-
-	private String gameId;
 
 	private Map<String, VoteOption> playerIdVoteOptionMap;
 
@@ -15,17 +13,8 @@ public class GameFinishVoteValueObject {
 	}
 
 	public GameFinishVoteValueObject(GameFinishVote vote) {
-		gameId = vote.getGameId();
 		playerIdVoteOptionMap = new HashMap<>(vote.getPlayerIdVoteOptionMap());
 		result = vote.getResult();
-	}
-
-	public String getGameId() {
-		return gameId;
-	}
-
-	public void setGameId(String gameId) {
-		this.gameId = gameId;
 	}
 
 	public Map<String, VoteOption> getPlayerIdVoteOptionMap() {

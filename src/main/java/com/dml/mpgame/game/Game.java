@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dml.mpgame.game.finish.GameFinishStrategy;
 import com.dml.mpgame.game.join.GameJoinStrategy;
 import com.dml.mpgame.game.leave.GameLeaveStrategy;
 import com.dml.mpgame.game.ready.GameReadyStrategy;
@@ -24,6 +25,7 @@ public class Game {
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy gameJoinStrategy;
+	private GameFinishStrategy gameFinishStrategy;
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
@@ -54,6 +56,14 @@ public class Game {
 		return leaveStrategy.leave(playerId, this);
 	}
 
+	public GameValueObject quit(String playerId) throws Exception {
+		if (!idPlayerMap.containsKey(playerId)) {
+			throw new GamePlayerNotFoundException();
+		}
+		idPlayerMap.remove(playerId);
+		return new GameValueObject(this);
+	}
+
 	public GameValueObject back(String playerId) throws Exception {
 		updatePlayerOnlineState(playerId, GamePlayerOnlineState.online);
 		return new GameValueObject(this);
@@ -61,6 +71,10 @@ public class Game {
 
 	public GameValueObject ready(String playerId) throws Exception {
 		return readyStrategy.ready(playerId, this);
+	}
+
+	public GameValueObject finish(String playerId) throws Exception {
+		return gameFinishStrategy.finish(playerId, this);
 	}
 
 	public void updatePlayerState(String playerId, GamePlayerState playerState) throws GamePlayerNotFoundException {
@@ -112,7 +126,7 @@ public class Game {
 		state = GameState.playing;
 	}
 
-	public GameValueObject finish() {
+	public GameValueObject doFinish() {
 		for (GamePlayer player : idPlayerMap.values()) {
 			player.setState(GamePlayerState.finished);
 		}
@@ -174,6 +188,14 @@ public class Game {
 
 	public void setGameJoinStrategy(GameJoinStrategy gameJoinStrategy) {
 		this.gameJoinStrategy = gameJoinStrategy;
+	}
+
+	public GameFinishStrategy getGameFinishStrategy() {
+		return gameFinishStrategy;
+	}
+
+	public void setGameFinishStrategy(GameFinishStrategy gameFinishStrategy) {
+		this.gameFinishStrategy = gameFinishStrategy;
 	}
 
 }

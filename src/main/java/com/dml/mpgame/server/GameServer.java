@@ -8,13 +8,6 @@ import com.dml.mpgame.game.Game;
 import com.dml.mpgame.game.GameNotFoundException;
 import com.dml.mpgame.game.GameValueObject;
 import com.dml.mpgame.game.PlayerNotInGameException;
-import com.dml.mpgame.game.finish.GameFinishVote;
-import com.dml.mpgame.game.finish.GameFinishVoteValueObject;
-import com.dml.mpgame.game.finish.GameIsNotVoteToFinishException;
-import com.dml.mpgame.game.finish.VoteAlreadyExistsException;
-import com.dml.mpgame.game.finish.VoteCalculator;
-import com.dml.mpgame.game.finish.VoteOption;
-import com.dml.mpgame.game.finish.VoteResult;
 import com.dml.mpgame.game.join.GameJoinStrategy;
 import com.dml.mpgame.game.leave.GameLeaveStrategy;
 import com.dml.mpgame.game.ready.GameReadyStrategy;
@@ -23,7 +16,6 @@ public class GameServer {
 
 	private String id;
 	private Map<String, Game> gameIdGameMap = new HashMap<>();
-	private Map<String, GameFinishVote> gameIdFinishVoteMap = new HashMap<>();
 
 	/**
 	 * 一台服务器对于同一个用户（一个socket）同时只能玩一场游戏。
@@ -81,15 +73,14 @@ public class GameServer {
 		return gameValueObject;
 	}
 
-	public GameValueObject finish(String gameId) throws Exception {
+	public GameValueObject finishGameImmediately(String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		GameValueObject gameValueObject = game.finish();
+		GameValueObject gameValueObject = game.doFinish();
 		gameIdGameMap.remove(gameId);
 		game.allPlayerIds().forEach((pid) -> playerIdGameIdMap.remove(pid));
-		gameIdFinishVoteMap.remove(gameId);
 		return gameValueObject;
 	}
 
@@ -110,62 +101,14 @@ public class GameServer {
 		return playerIdGameIdMap.get(playerId);
 	}
 
-	/**
-	 * 发起结束投票.发起人认为是投同意结束
-	 */
-	public GameFinishVoteValueObject startFinishVote(String playerId, VoteCalculator voteCalculator) throws Exception {
+	public GameValueObject finishGame(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new PlayerNotInGameException();
 		}
-		GameFinishVote vote = gameIdFinishVoteMap.get(gameId);
-		if (vote != null) {
-			throw new VoteAlreadyExistsException();
-		}
-		vote = new GameFinishVote(gameId, voteCalculator);
-		gameIdFinishVoteMap.put(gameId, vote);
-
-		return voteToFinishGame(playerId, VoteOption.yes);
-
-	}
-
-	public GameFinishVoteValueObject voteToFinishGame(String playerId, VoteOption option) throws Exception {
-		String gameId = playerIdGameIdMap.get(playerId);
-		if (gameId == null) {
-			throw new PlayerNotInGameException();
-		}
-		GameFinishVote vote = gameIdFinishVoteMap.get(gameId);
-		if (vote == null) {
-			throw new GameIsNotVoteToFinishException();
-		}
-		vote.vote(playerId, option);
 		Game game = gameIdGameMap.get(gameId);
-		vote.calculateResult(game);
-		VoteResult voteResult = vote.getResult();
-		if (voteResult != null) {// 出结果了
-			if (voteResult.equals(VoteResult.yes)) {// 通过
-				finish(gameId);
-			}
-			gameIdFinishVoteMap.remove(gameId);
-		}
-		return new GameFinishVoteValueObject(vote);
-	}
+		return game.finish(playerId);
 
-	public GameFinishVoteValueObject calculateVoteResultToFinishGame(String gameId) throws Exception {
-		GameFinishVote vote = gameIdFinishVoteMap.get(gameId);
-		if (vote == null) {
-			throw new GameIsNotVoteToFinishException();
-		}
-		Game game = gameIdGameMap.get(gameId);
-		vote.calculateResult(game);
-		VoteResult voteResult = vote.getResult();
-		if (voteResult != null) {// 出结果了
-			if (voteResult.equals(VoteResult.yes)) {// 通过
-				finish(gameId);
-			}
-			gameIdFinishVoteMap.remove(gameId);
-		}
-		return new GameFinishVoteValueObject(vote);
 	}
 
 	public GameValueObject findGame(String gameId) throws Exception {
@@ -174,6 +117,14 @@ public class GameServer {
 			throw new GameNotFoundException();
 		}
 		return new GameValueObject(game);
+	}
+
+	public Game findGamePlayerPlaying(String playerId) throws Exception {
+		String gameId = playerIdGameIdMap.get(playerId);
+		if (gameId == null) {
+			throw new PlayerNotInGameException();
+		}
+		return gameIdGameMap.get(gameId);
 	}
 
 	public String getId() {

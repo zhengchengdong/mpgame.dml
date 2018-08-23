@@ -31,8 +31,12 @@ public class VoteAfterStartedGameFinishStrategy implements GameFinishStrategy {
 	@Override
 	public GameValueObject finish(String playerId, Game game) throws Exception {
 		if (game.getState().equals(GameState.playing)) {
-			vote = new GameFinishVote(voteCalculator);
-			return vote(playerId, VoteOption.yes, game);
+			if (vote == null || vote.getResult() == null) {
+				vote = new GameFinishVote(voteCalculator);
+				return vote(playerId, VoteOption.yes, game);
+			} else {
+				throw new VoteAlreadyExistsException();
+			}
 		} else {
 			if (playerId.equals(hostPlayerId)) {
 				return game.doFinish();

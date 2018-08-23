@@ -8,6 +8,7 @@ import com.dml.mpgame.game.Game;
 import com.dml.mpgame.game.GameNotFoundException;
 import com.dml.mpgame.game.GameValueObject;
 import com.dml.mpgame.game.PlayerNotInGameException;
+import com.dml.mpgame.game.finish.GameFinishStrategy;
 import com.dml.mpgame.game.join.GameJoinStrategy;
 import com.dml.mpgame.game.leave.GameLeaveStrategy;
 import com.dml.mpgame.game.ready.GameReadyStrategy;
@@ -23,11 +24,12 @@ public class GameServer {
 	private Map<String, String> playerIdGameIdMap = new HashMap<>();
 
 	public void playerCreateGame(String gameId, GameJoinStrategy joinStrategy, GameReadyStrategy readyStrategy,
-			GameLeaveStrategy leaveStrategy, String playerId) {
+			GameLeaveStrategy leaveStrategy, GameFinishStrategy gameFinishStrategy, String playerId) {
 		Game newGame = new Game();
 		newGame.setGameJoinStrategy(joinStrategy);
 		newGame.setReadyStrategy(readyStrategy);
 		newGame.setLeaveStrategy(leaveStrategy);
+		newGame.setGameFinishStrategy(gameFinishStrategy);
 		newGame.create(gameId, playerId);
 		gameIdGameMap.put(gameId, newGame);
 		playerIdGameIdMap.put(playerId, gameId);

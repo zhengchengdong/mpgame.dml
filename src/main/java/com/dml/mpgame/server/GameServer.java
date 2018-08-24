@@ -23,16 +23,18 @@ public class GameServer {
 	 */
 	private Map<String, String> playerIdGameIdMap = new HashMap<>();
 
-	public void playerCreateGame(String gameId, GameJoinStrategy joinStrategy, GameReadyStrategy readyStrategy,
-			GameLeaveStrategy leaveStrategy, GameFinishStrategy gameFinishStrategy, String playerId) {
+	public GameValueObject playerCreateGame(String gameId, GameJoinStrategy joinStrategy,
+			GameReadyStrategy readyStrategy, GameLeaveStrategy leaveStrategy, GameFinishStrategy gameFinishStrategy,
+			String playerId) {
 		Game newGame = new Game();
-		newGame.setGameJoinStrategy(joinStrategy);
+		newGame.setJoinStrategy(joinStrategy);
 		newGame.setReadyStrategy(readyStrategy);
 		newGame.setLeaveStrategy(leaveStrategy);
-		newGame.setGameFinishStrategy(gameFinishStrategy);
+		newGame.setFinishStrategy(gameFinishStrategy);
 		newGame.create(gameId, playerId);
 		gameIdGameMap.put(gameId, newGame);
 		playerIdGameIdMap.put(playerId, gameId);
+		return new GameValueObject(newGame);
 	}
 
 	public GameValueObject join(String playerId, String gameId) throws Exception {

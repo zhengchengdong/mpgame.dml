@@ -23,7 +23,7 @@ public class GameValueObject {
 			copy.setOnlineState(player.getOnlineState());
 			players.add(copy);
 		});
-		finishStrategy = game.getGameFinishStrategy().generateValueObject();
+		finishStrategy = game.getFinishStrategy().generateValueObject();
 	}
 
 	public List<String> allPlayerIds() {

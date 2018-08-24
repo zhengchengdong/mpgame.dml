@@ -24,8 +24,8 @@ public class Game {
 
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
-	private GameJoinStrategy gameJoinStrategy;
-	private GameFinishStrategy gameFinishStrategy;
+	private GameJoinStrategy joinStrategy;
+	private GameFinishStrategy finishStrategy;
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
@@ -49,7 +49,7 @@ public class Game {
 		if (idPlayerMap.containsKey(playerId)) {
 			throw new GamePlayerAlreadyInGameException();
 		}
-		return gameJoinStrategy.join(playerId, this);
+		return joinStrategy.join(playerId, this);
 	}
 
 	public GameValueObject leave(String playerId) throws Exception {
@@ -74,7 +74,7 @@ public class Game {
 	}
 
 	public GameValueObject finish(String playerId) throws Exception {
-		return gameFinishStrategy.finish(playerId, this);
+		return finishStrategy.finish(playerId, this);
 	}
 
 	public void updatePlayerState(String playerId, GamePlayerState playerState) throws GamePlayerNotFoundException {
@@ -182,20 +182,20 @@ public class Game {
 		this.readyStrategy = readyStrategy;
 	}
 
-	public GameJoinStrategy getGameJoinStrategy() {
-		return gameJoinStrategy;
+	public GameJoinStrategy getJoinStrategy() {
+		return joinStrategy;
 	}
 
-	public void setGameJoinStrategy(GameJoinStrategy gameJoinStrategy) {
-		this.gameJoinStrategy = gameJoinStrategy;
+	public void setJoinStrategy(GameJoinStrategy joinStrategy) {
+		this.joinStrategy = joinStrategy;
 	}
 
-	public GameFinishStrategy getGameFinishStrategy() {
-		return gameFinishStrategy;
+	public GameFinishStrategy getFinishStrategy() {
+		return finishStrategy;
 	}
 
-	public void setGameFinishStrategy(GameFinishStrategy gameFinishStrategy) {
-		this.gameFinishStrategy = gameFinishStrategy;
+	public void setFinishStrategy(GameFinishStrategy finishStrategy) {
+		this.finishStrategy = finishStrategy;
 	}
 
 }

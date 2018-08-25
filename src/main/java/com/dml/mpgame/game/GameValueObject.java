@@ -9,21 +9,24 @@ public class GameValueObject {
 
 	private String id;
 	private GameState state;
-	private List<GamePlayer> players;
+	private List<GamePlayerValueObject> players;
 	private GameFinishStrategyValueObject finishStrategy;
 
 	public GameValueObject(Game game) {
 		id = game.getId();
 		state = game.getState();
-		players = new ArrayList<GamePlayer>();
-		game.getIdPlayerMap().values().forEach((player) -> {
-			GamePlayer copy = new GamePlayer();
-			copy.setId(player.getId());
-			copy.setState(player.getState());
-			copy.setOnlineState(player.getOnlineState());
-			players.add(copy);
-		});
+		players = new ArrayList<>();
+		game.getIdPlayerMap().values().forEach((player) -> players.add(new GamePlayerValueObject(player)));
 		finishStrategy = game.getFinishStrategy().generateValueObject();
+	}
+
+	public GamePlayerOnlineState findPlayerOnlineState(String playerId) {
+		for (GamePlayerValueObject player : players) {
+			if (player.getId().equals(playerId)) {
+				return player.getOnlineState();
+			}
+		}
+		return null;
 	}
 
 	public List<String> allPlayerIds() {
@@ -48,11 +51,11 @@ public class GameValueObject {
 		this.state = state;
 	}
 
-	public List<GamePlayer> getPlayers() {
+	public List<GamePlayerValueObject> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<GamePlayer> players) {
+	public void setPlayers(List<GamePlayerValueObject> players) {
 		this.players = players;
 	}
 

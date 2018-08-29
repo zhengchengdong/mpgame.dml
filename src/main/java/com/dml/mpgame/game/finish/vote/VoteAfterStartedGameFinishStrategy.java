@@ -47,7 +47,7 @@ public class VoteAfterStartedGameFinishStrategy implements GameFinishStrategy {
 	}
 
 	public GameValueObject vote(String playerId, VoteOption option, Game game) throws Exception {
-		vote.vote(playerId, VoteOption.yes);
+		vote.vote(playerId, option);
 		vote.calculateResult(game);
 		VoteResult voteResult = vote.getResult();
 		if (voteResult != null) {// 出结果了

@@ -25,7 +25,8 @@ public class Game {
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy joinStrategy;
-	private GameFinishStrategy finishStrategy;
+	private GameFinishStrategy finishStrategy;// GameFinishProcessState
+	// GamePlayProcess(PanGame)<>--->GamePlayProcessState
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;

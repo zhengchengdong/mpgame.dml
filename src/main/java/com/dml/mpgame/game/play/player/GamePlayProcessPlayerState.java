@@ -1,4 +1,4 @@
-package com.dml.mpgame.game.play;
+package com.dml.mpgame.game.play.player;
 
 /**
  * 玩游戏过程中的玩家状态。比如 一盘刚结束，正在投票， 正在温州麻将买底 等等。
@@ -7,5 +7,5 @@ package com.dml.mpgame.game.play;
  *
  */
 public interface GamePlayProcessPlayerState {
-
+	public String name();
 }

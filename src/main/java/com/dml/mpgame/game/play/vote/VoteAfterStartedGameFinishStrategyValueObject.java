@@ -1,4 +1,4 @@
-package com.dml.mpgame.game.finish.vote;
+package com.dml.mpgame.game.play.vote;
 
 import com.dml.mpgame.game.finish.GameFinishStrategyValueObject;
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.dml.mpgame.game.finish.GameFinishStrategy;
 import com.dml.mpgame.game.join.GameJoinStrategy;
 import com.dml.mpgame.game.leave.GameLeaveStrategy;
+import com.dml.mpgame.game.play.GamePlayProcess;
 import com.dml.mpgame.game.ready.GameReadyStrategy;
 
 /**
@@ -25,8 +26,9 @@ public class Game {
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy joinStrategy;
-	private GameFinishStrategy finishStrategy;// GameFinishProcessState
-	// GamePlayProcess(PanGame)<>--->GamePlayProcessState
+	private GameFinishStrategy finishStrategy;// TODO 不再需要了
+
+	private GamePlayProcess playProcess;
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
@@ -197,6 +199,14 @@ public class Game {
 
 	public void setFinishStrategy(GameFinishStrategy finishStrategy) {
 		this.finishStrategy = finishStrategy;
+	}
+
+	public GamePlayProcess getPlayProcess() {
+		return playProcess;
+	}
+
+	public void setPlayProcess(GamePlayProcess playProcess) {
+		this.playProcess = playProcess;
 	}
 
 }

@@ -1,8 +1,10 @@
 package com.dml.mpgame.game.play.multipanandvote;
 
+import com.dml.mpgame.game.play.Finished;
 import com.dml.mpgame.game.play.GamePlayProcess;
 import com.dml.mpgame.game.play.multipan.WaitingNextPan;
-import com.dml.mpgame.game.play.multipan.player.PanFinished;
+import com.dml.mpgame.game.play.multipan.player.PlayerPanFinished;
+import com.dml.mpgame.game.play.player.PlayerFinished;
 
 /**
  * 过程中要玩多盘游戏，并且以玩家投票的方式决定是否中止游戏。
@@ -26,9 +28,14 @@ public abstract class MultipanAndVotetofinishGamePlayProcess extends GamePlayPro
 		}
 	}
 
+	private void finishProcess() {
+		state = new Finished();
+		updateAllPlayersState(new PlayerFinished());
+	}
+
 	private void finishCurrentPan() {
 		state = new WaitingNextPan();
-		updateAllPlayersState(new PanFinished());
+		updateAllPlayersState(new PlayerPanFinished());
 	}
 
 	protected abstract boolean checkToFinishProcess() throws Exception;

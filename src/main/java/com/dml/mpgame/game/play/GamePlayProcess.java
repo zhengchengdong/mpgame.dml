@@ -15,10 +15,10 @@ public abstract class GamePlayProcess {
 
 	protected GamePlayProcessState state;
 
-	protected Map<String, GamePlayProcessPlayerState> playerStates = new HashMap<>();
+	protected Map<String, GamePlayProcessPlayerState> playersState = new HashMap<>();
 
 	protected void updateAllPlayersState(GamePlayProcessPlayerState playerState) {
-		playerStates.keySet().forEach((pid) -> playerStates.put(pid, playerState));
+		playersState.keySet().forEach((pid) -> playersState.put(pid, playerState));
 	}
 
 	public GamePlayProcessState getState() {
@@ -29,12 +29,12 @@ public abstract class GamePlayProcess {
 		this.state = state;
 	}
 
-	public Map<String, GamePlayProcessPlayerState> getPlayerStates() {
-		return playerStates;
+	public Map<String, GamePlayProcessPlayerState> getPlayersState() {
+		return playersState;
 	}
 
-	public void setPlayerStates(Map<String, GamePlayProcessPlayerState> playerStates) {
-		this.playerStates = playerStates;
+	public void setPlayersState(Map<String, GamePlayProcessPlayerState> playersState) {
+		this.playersState = playersState;
 	}
 
 }

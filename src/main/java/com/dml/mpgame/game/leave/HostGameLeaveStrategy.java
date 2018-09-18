@@ -1,9 +1,8 @@
 package com.dml.mpgame.game.leave;
 
 import com.dml.mpgame.game.Game;
-import com.dml.mpgame.game.GamePlayerOnlineState;
-import com.dml.mpgame.game.GameState;
-import com.dml.mpgame.game.GameValueObject;
+import com.dml.mpgame.game.WaitingStart;
+import com.dml.mpgame.game.player.GamePlayerOnlineState;
 
 public class HostGameLeaveStrategy implements GameLeaveStrategy {
 
@@ -17,9 +16,9 @@ public class HostGameLeaveStrategy implements GameLeaveStrategy {
 	}
 
 	@Override
-	public GameValueObject leave(String playerId, Game game) throws Exception {
+	public void leave(String playerId, Game game) throws Exception {
 
-		if (game.getState().equals(GameState.waitingStart)) {// 准备阶段特殊处理
+		if (game.getState().name().equals(WaitingStart.name)) {// 准备阶段特殊处理
 			if (playerId.equals(hostPlayerId)) {// 主机玩家正常离开
 				game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);
 			} else {// 副机玩家离开就是直接退出
@@ -28,7 +27,6 @@ public class HostGameLeaveStrategy implements GameLeaveStrategy {
 		} else {// 开玩之后一切正常处理
 			game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);
 		}
-		return new GameValueObject(game);
 
 	}
 

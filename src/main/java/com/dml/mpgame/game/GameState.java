@@ -6,6 +6,6 @@ package com.dml.mpgame.game;
  * @author Neo
  *
  */
-public enum GameState {
-	waitingStart, playing, finished
+public interface GameState {
+	public String name();
 }

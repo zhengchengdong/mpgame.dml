@@ -1,10 +1,10 @@
 package com.dml.mpgame.game.ready;
 
 import com.dml.mpgame.game.Game;
-import com.dml.mpgame.game.GamePlayerState;
-import com.dml.mpgame.game.GameState;
-import com.dml.mpgame.game.GameValueObject;
 import com.dml.mpgame.game.IllegalOperationException;
+import com.dml.mpgame.game.WaitingStart;
+import com.dml.mpgame.game.player.PlayerJoined;
+import com.dml.mpgame.game.player.PlayerReadyToStart;
 
 public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy {
 
@@ -18,15 +18,15 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 	}
 
 	@Override
-	public GameValueObject ready(String playerId, Game game) throws Exception {
+	public void ready(String playerId, Game game) throws Exception {
 
-		if (!game.getState().equals(GameState.waitingStart)) {
+		if (!game.getState().name().equals(WaitingStart.name)) {
 			throw new IllegalOperationException();
 		}
-		if (!game.playerState(playerId).equals(GamePlayerState.joined)) {
+		if (!game.playerState(playerId).name().equals(PlayerJoined.name)) {
 			throw new IllegalOperationException();
 		}
-		game.updatePlayerState(playerId, GamePlayerState.readyToStart);
+		game.updatePlayerState(playerId, new PlayerReadyToStart());
 
 		int playerCounts = game.playerCounts();
 		if (playerCounts == fixedNumberOfPlayers) {// 达到游戏规定人数
@@ -34,7 +34,6 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 				game.start();
 			}
 		}
-		return new GameValueObject(game);
 	}
 
 }

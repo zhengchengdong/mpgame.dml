@@ -1,22 +1,15 @@
-package com.dml.mpgame.game;
+package com.dml.mpgame.game.player;
 
-import com.dml.mpgame.game.player.GamePlayer;
-import com.dml.mpgame.game.player.GamePlayerOnlineState;
-import com.dml.mpgame.game.player.GamePlayerState;
-
-public class GamePlayerValueObject {
+/**
+ * 游戏玩家
+ * 
+ * @author Neo
+ *
+ */
+public class GamePlayer {
 	private String id;
 	private GamePlayerState state;
 	private GamePlayerOnlineState onlineState;
-
-	public GamePlayerValueObject() {
-	}
-
-	public GamePlayerValueObject(GamePlayer gamePlayer) {
-		id = gamePlayer.getId();
-		state = gamePlayer.getState();
-		onlineState = gamePlayer.getOnlineState();
-	}
 
 	public String getId() {
 		return id;

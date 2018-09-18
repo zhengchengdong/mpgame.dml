@@ -5,10 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dml.mpgame.game.finish.GameFinishStrategy;
 import com.dml.mpgame.game.join.GameJoinStrategy;
 import com.dml.mpgame.game.leave.GameLeaveStrategy;
-import com.dml.mpgame.game.play.GamePlayProcess;
+import com.dml.mpgame.game.player.GamePlayer;
+import com.dml.mpgame.game.player.GamePlayerAlreadyInGameException;
+import com.dml.mpgame.game.player.GamePlayerNotFoundException;
+import com.dml.mpgame.game.player.GamePlayerOnlineState;
+import com.dml.mpgame.game.player.GamePlayerState;
+import com.dml.mpgame.game.player.PlayerFinished;
+import com.dml.mpgame.game.player.PlayerJoined;
+import com.dml.mpgame.game.player.PlayerReadyToStart;
 import com.dml.mpgame.game.ready.GameReadyStrategy;
 
 /**
@@ -17,29 +23,27 @@ import com.dml.mpgame.game.ready.GameReadyStrategy;
  * @author Neo
  *
  */
-public class Game {
+public abstract class Game {
 
-	private String id;
-	private GameState state;
-	private Map<String, GamePlayer> idPlayerMap = new HashMap<>();
+	protected String id;
+	protected String createPlayerId;
+	protected GameState state;
+	protected Map<String, GamePlayer> idPlayerMap = new HashMap<>();
 
 	private GameLeaveStrategy leaveStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy joinStrategy;
-	private GameFinishStrategy finishStrategy;// TODO 不再需要了
-
-	private GamePlayProcess playProcess;
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
 		newPlayer(createPlayerId);
-		state = GameState.waitingStart;
+		state = new WaitingStart();
 	}
 
 	public void newPlayer(String playerId) {
 		GamePlayer player = new GamePlayer();
 		player.setId(playerId);
-		player.setState(GamePlayerState.joined);
+		player.setState(new PlayerJoined());
 		player.setOnlineState(GamePlayerOnlineState.online);
 		idPlayerMap.put(playerId, player);
 	}
@@ -48,36 +52,38 @@ public class Game {
 		return idPlayerMap.size();
 	}
 
-	public GameValueObject join(String playerId) throws Exception {
+	public void join(String playerId) throws Exception {
 		if (idPlayerMap.containsKey(playerId)) {
 			throw new GamePlayerAlreadyInGameException();
 		}
-		return joinStrategy.join(playerId, this);
+		joinStrategy.join(playerId, this);
 	}
 
-	public GameValueObject leave(String playerId) throws Exception {
-		return leaveStrategy.leave(playerId, this);
+	public void leave(String playerId) throws Exception {
+		leaveStrategy.leave(playerId, this);
 	}
 
-	public GameValueObject quit(String playerId) throws Exception {
+	public void quit(String playerId) throws Exception {
 		if (!idPlayerMap.containsKey(playerId)) {
 			throw new GamePlayerNotFoundException();
 		}
 		idPlayerMap.remove(playerId);
-		return new GameValueObject(this);
 	}
 
-	public GameValueObject back(String playerId) throws Exception {
+	public void back(String playerId) throws Exception {
 		updatePlayerOnlineState(playerId, GamePlayerOnlineState.online);
-		return new GameValueObject(this);
 	}
 
-	public GameValueObject ready(String playerId) throws Exception {
-		return readyStrategy.ready(playerId, this);
+	public void ready(String playerId) throws Exception {
+		readyStrategy.ready(playerId, this);
 	}
 
-	public GameValueObject finish(String playerId) throws Exception {
-		return finishStrategy.finish(playerId, this);
+	public void cancel() throws Exception {
+		if (state.name().equals(WaitingStart.name)) {
+			state = new Canceled();
+		} else {
+			throw new IllegalOperationException();
+		}
 	}
 
 	public void updatePlayerState(String playerId, GamePlayerState playerState) throws GamePlayerNotFoundException {
@@ -115,26 +121,27 @@ public class Game {
 
 	public boolean allPlayersReady() {
 		for (GamePlayer player : idPlayerMap.values()) {
-			if (!player.getState().equals(GamePlayerState.readyToStart)) {
+			if (!player.getState().name().equals(PlayerReadyToStart.name)) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public void start() {
-		for (GamePlayer player : idPlayerMap.values()) {
-			player.setState(GamePlayerState.playing);
-		}
-		state = GameState.playing;
+	public abstract void start() throws Exception;
+
+	/**
+	 * 正常游戏玩完结束
+	 */
+	public void finish() {
+		state = new Finished();
+		updateAllPlayersState(new PlayerFinished());
 	}
 
-	public GameValueObject doFinish() {
+	protected void updateAllPlayersState(GamePlayerState playerState) {
 		for (GamePlayer player : idPlayerMap.values()) {
-			player.setState(GamePlayerState.finished);
+			player.setState(playerState);
 		}
-		state = GameState.finished;
-		return new GameValueObject(this);
 	}
 
 	public List<String> allPlayerIds() {
@@ -151,6 +158,14 @@ public class Game {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getCreatePlayerId() {
+		return createPlayerId;
+	}
+
+	public void setCreatePlayerId(String createPlayerId) {
+		this.createPlayerId = createPlayerId;
 	}
 
 	public GameState getState() {
@@ -191,22 +206,6 @@ public class Game {
 
 	public void setJoinStrategy(GameJoinStrategy joinStrategy) {
 		this.joinStrategy = joinStrategy;
-	}
-
-	public GameFinishStrategy getFinishStrategy() {
-		return finishStrategy;
-	}
-
-	public void setFinishStrategy(GameFinishStrategy finishStrategy) {
-		this.finishStrategy = finishStrategy;
-	}
-
-	public GamePlayProcess getPlayProcess() {
-		return playProcess;
-	}
-
-	public void setPlayProcess(GamePlayProcess playProcess) {
-		this.playProcess = playProcess;
 	}
 
 }

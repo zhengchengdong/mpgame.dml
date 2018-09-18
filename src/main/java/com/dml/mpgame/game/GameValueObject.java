@@ -3,21 +3,21 @@ package com.dml.mpgame.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dml.mpgame.game.finish.GameFinishStrategyValueObject;
+import com.dml.mpgame.game.player.GamePlayerOnlineState;
 
-public class GameValueObject {
+public abstract class GameValueObject {
 
 	private String id;
+	private String createPlayerId;
 	private GameState state;
 	private List<GamePlayerValueObject> players;
-	private GameFinishStrategyValueObject finishStrategy;
 
 	public GameValueObject(Game game) {
 		id = game.getId();
+		createPlayerId = game.getCreatePlayerId();
 		state = game.getState();
 		players = new ArrayList<>();
 		game.getIdPlayerMap().values().forEach((player) -> players.add(new GamePlayerValueObject(player)));
-		finishStrategy = game.getFinishStrategy().generateValueObject();
 	}
 
 	public GamePlayerOnlineState findPlayerOnlineState(String playerId) {
@@ -43,6 +43,14 @@ public class GameValueObject {
 		this.id = id;
 	}
 
+	public String getCreatePlayerId() {
+		return createPlayerId;
+	}
+
+	public void setCreatePlayerId(String createPlayerId) {
+		this.createPlayerId = createPlayerId;
+	}
+
 	public GameState getState() {
 		return state;
 	}
@@ -57,14 +65,6 @@ public class GameValueObject {
 
 	public void setPlayers(List<GamePlayerValueObject> players) {
 		this.players = players;
-	}
-
-	public GameFinishStrategyValueObject getFinishStrategy() {
-		return finishStrategy;
-	}
-
-	public void setFinishStrategy(GameFinishStrategyValueObject finishStrategy) {
-		this.finishStrategy = finishStrategy;
 	}
 
 }

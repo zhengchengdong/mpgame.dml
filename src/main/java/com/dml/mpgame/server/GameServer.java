@@ -6,12 +6,7 @@ import java.util.Map;
 
 import com.dml.mpgame.game.Game;
 import com.dml.mpgame.game.GameNotFoundException;
-import com.dml.mpgame.game.GameValueObject;
-import com.dml.mpgame.game.PlayerNotInGameException;
-import com.dml.mpgame.game.finish.GameFinishStrategy;
-import com.dml.mpgame.game.join.GameJoinStrategy;
-import com.dml.mpgame.game.leave.GameLeaveStrategy;
-import com.dml.mpgame.game.ready.GameReadyStrategy;
+import com.dml.mpgame.game.player.PlayerNotInGameException;
 
 public class GameServer {
 
@@ -23,69 +18,56 @@ public class GameServer {
 	 */
 	private Map<String, String> playerIdGameIdMap = new HashMap<>();
 
-	public GameValueObject playerCreateGame(String gameId, GameJoinStrategy joinStrategy,
-			GameReadyStrategy readyStrategy, GameLeaveStrategy leaveStrategy, GameFinishStrategy gameFinishStrategy,
-			String playerId) {
-		Game newGame = new Game();
-		newGame.setJoinStrategy(joinStrategy);
-		newGame.setReadyStrategy(readyStrategy);
-		newGame.setLeaveStrategy(leaveStrategy);
-		newGame.setFinishStrategy(gameFinishStrategy);
-		newGame.create(gameId, playerId);
-		gameIdGameMap.put(gameId, newGame);
-		playerIdGameIdMap.put(playerId, gameId);
-		return new GameValueObject(newGame);
+	public void playerCreateGame(Game newGame, String playerId) {
+		gameIdGameMap.put(newGame.getId(), newGame);
+		playerIdGameIdMap.put(playerId, newGame.getId());
 	}
 
-	public GameValueObject join(String playerId, String gameId) throws Exception {
+	public void join(String playerId, String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		GameValueObject gameValueObject = game.join(playerId);
+		game.join(playerId);
 		playerIdGameIdMap.put(playerId, gameId);
-		return gameValueObject;
 	}
 
-	public GameValueObject ready(String playerId) throws Exception {
+	public void ready(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new PlayerNotInGameException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		return game.ready(playerId);
+		game.ready(playerId);
 	}
 
-	public GameValueObject leave(String playerId) throws Exception {
+	public void leave(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
-			return null;
+			throw new GameNotFoundException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		GameValueObject gameValueObject = game.leave(playerId);
+		game.leave(playerId);
 		playerIdGameIdMap.remove(playerId);
-		return gameValueObject;
 	}
 
-	public GameValueObject back(String playerId, String gameId) throws Exception {
+	public void back(String playerId, String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		GameValueObject gameValueObject = game.back(playerId);
+		game.back(playerId);
 		playerIdGameIdMap.put(playerId, gameId);
-		return gameValueObject;
 	}
 
-	public GameValueObject finishGameImmediately(String gameId) throws Exception {
+	public void finishGameImmediately(String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		GameValueObject gameValueObject = game.doFinish();
+		game.finish();
 		gameIdGameMap.remove(gameId);
 		game.allPlayerIds().forEach((pid) -> playerIdGameIdMap.remove(pid));
-		return gameValueObject;
 	}
 
 	public List<String> findAllPlayerIdsForGame(String gameId) {
@@ -105,22 +87,22 @@ public class GameServer {
 		return playerIdGameIdMap.get(playerId);
 	}
 
-	public GameValueObject finishGame(String playerId) throws Exception {
+	public void finishGame(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new PlayerNotInGameException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		return game.finish(playerId);
+		game.finish();
 
 	}
 
-	public GameValueObject findGame(String gameId) throws Exception {
+	public Game findGame(String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		return new GameValueObject(game);
+		return game;
 	}
 
 	public Game findGamePlayerPlaying(String playerId) throws Exception {

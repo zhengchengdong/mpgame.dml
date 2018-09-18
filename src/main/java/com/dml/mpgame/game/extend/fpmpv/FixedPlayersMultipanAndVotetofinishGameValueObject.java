@@ -8,6 +8,8 @@ import com.dml.mpgame.game.extend.vote.GameFinishVoteValueObject;
 
 public abstract class FixedPlayersMultipanAndVotetofinishGameValueObject extends GameValueObject {
 
+	private int panNo;
+
 	private int fixedPlayerCount;
 
 	private GameFinishVoteValueObject vote;
@@ -16,11 +18,20 @@ public abstract class FixedPlayersMultipanAndVotetofinishGameValueObject extends
 
 	public FixedPlayersMultipanAndVotetofinishGameValueObject(FixedPlayersMultipanAndVotetofinishGame game) {
 		super(game);
+		panNo = game.getPanNo();
 		fixedPlayerCount = game.getFixedPlayerCount();
 		if (game.getVote() != null) {
 			vote = new GameFinishVoteValueObject(game.getVote());
 		}
 		readyToStartNextPanPlayerIdsSet = new HashSet<>(game.getReadyToStartNextPanPlayerIdsSet());
+	}
+
+	public int getPanNo() {
+		return panNo;
+	}
+
+	public void setPanNo(int panNo) {
+		this.panNo = panNo;
 	}
 
 	public int getFixedPlayerCount() {

@@ -32,6 +32,11 @@ import com.dml.mpgame.game.player.PlayerPlaying;
  */
 public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
+	/**
+	 * 第几盘，从1开始
+	 */
+	private int panNo = 1;
+
 	private int fixedPlayerCount;
 
 	private GameFinishVote vote;
@@ -68,6 +73,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 			// 还要判断是否都准备好了，开始游戏了
 			if (allPlayersReadyToNextPan()) {
 				startNextPan();
+				panNo++;
 				readyToStartNextPanPlayerIdsSet.clear();
 			}
 		} else {
@@ -175,6 +181,14 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 	}
 
 	protected abstract void recoveryExtendedStateFromVoting() throws Exception;
+
+	public int getPanNo() {
+		return panNo;
+	}
+
+	public void setPanNo(int panNo) {
+		this.panNo = panNo;
+	}
 
 	public int getFixedPlayerCount() {
 		return fixedPlayerCount;

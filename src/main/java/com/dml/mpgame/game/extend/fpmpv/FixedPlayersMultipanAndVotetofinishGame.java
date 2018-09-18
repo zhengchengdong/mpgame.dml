@@ -139,7 +139,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		VoteResult voteResult = vote.getResult();
 		if (voteResult != null) {// 出结果了
 			if (voteResult.equals(VoteResult.yes)) {// 通过
-				finish();
+				state = new FinishedByVote();
 			} else {// 没通过，恢复到投票前的状态
 				recoveryStateFromVoting();
 			}

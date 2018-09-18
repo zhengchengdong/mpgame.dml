@@ -17,7 +17,9 @@ public abstract class FixedPlayersMultipanAndVotetofinishGameValueObject extends
 	public FixedPlayersMultipanAndVotetofinishGameValueObject(FixedPlayersMultipanAndVotetofinishGame game) {
 		super(game);
 		fixedPlayerCount = game.getFixedPlayerCount();
-		vote = new GameFinishVoteValueObject(game.getVote());
+		if (game.getVote() != null) {
+			vote = new GameFinishVoteValueObject(game.getVote());
+		}
 		readyToStartNextPanPlayerIdsSet = new HashSet<>(game.getReadyToStartNextPanPlayerIdsSet());
 	}
 

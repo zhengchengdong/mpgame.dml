@@ -36,6 +36,7 @@ public abstract class Game {
 
 	public void create(String id, String createPlayerId) {
 		this.id = id;
+		this.createPlayerId = createPlayerId;
 		newPlayer(createPlayerId);
 		state = new WaitingStart();
 	}

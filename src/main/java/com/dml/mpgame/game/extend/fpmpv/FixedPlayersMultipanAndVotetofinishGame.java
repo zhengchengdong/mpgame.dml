@@ -89,7 +89,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	public void launchVoteToFinish(String playerId, VoteCalculator voteCalculator) throws Exception {
 
-		if (ifInVotingState()) {
+		if (ifVoting()) {
 			throw new VoteAlreadyLaunchedException();
 		}
 
@@ -121,20 +121,17 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		} else if (stateName.equals(PlayerReadyToStartNextPan.name)) {
 			player.setState(new PlayerReadyToStartNextPanAndVoting());
 		} else {
+			updatePlayerToExtendedVotingState(player);
 		}
 	}
+
+	protected abstract void updatePlayerToExtendedVotingState(GamePlayer player);
 
 	protected abstract void updateToExtendedVotingState();
 
-	private boolean ifInVotingState() {
-		if (state.name().equals(VotingWhenPlaying.name) || state.name().equals(VotingWhenWaitingNextPan.name)) {
-			return true;
-		} else {
-			return ifInExtendedVotingState();
-		}
+	private boolean ifVoting() {
+		return (vote != null && vote.getResult() == null);
 	}
-
-	protected abstract boolean ifInExtendedVotingState();
 
 	public void voteToFinish(String playerId, VoteOption option) throws Exception {
 		vote.vote(playerId, option);
@@ -159,8 +156,11 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		} else if (stateName.equals(PlayerReadyToStartNextPanAndVoting.name)) {
 			player.setState(new PlayerReadyToStartNextPanAndVoted());
 		} else {
+			updatePlayerToExtendedVotedState(player);
 		}
 	}
+
+	protected abstract void updatePlayerToExtendedVotedState(GamePlayer player);
 
 	private void recoveryStateFromVoting() throws Exception {
 		if (state.name().equals(VotingWhenPlaying.name)) {
@@ -176,11 +176,11 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				}
 			}
 		} else {
-			recoveryExtendedStateFromVoting();
+			recoveryStateFromExtendedVoting();
 		}
 	}
 
-	protected abstract void recoveryExtendedStateFromVoting() throws Exception;
+	protected abstract void recoveryStateFromExtendedVoting() throws Exception;
 
 	public int getPanNo() {
 		return panNo;

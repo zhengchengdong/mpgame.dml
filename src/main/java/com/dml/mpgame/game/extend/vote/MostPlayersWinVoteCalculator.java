@@ -1,10 +1,6 @@
 package com.dml.mpgame.game.extend.vote;
 
-import java.util.List;
-
-import com.dml.mpgame.game.Game;
-import com.dml.mpgame.game.player.GamePlayer;
-import com.dml.mpgame.game.player.GamePlayerOnlineState;
+import java.util.Set;
 
 /**
  * 少数服从多数.平手的话算不通过
@@ -15,26 +11,24 @@ import com.dml.mpgame.game.player.GamePlayerOnlineState;
 public class MostPlayersWinVoteCalculator implements VoteCalculator {
 
 	@Override
-	public void calculateResult(GameFinishVote vote, Game game) {
-		List<String> allPlayerIds = game.allPlayerIds();
+	public void calculateResult(GameFinishVote vote) {
+		Set<String> votePlayerIds = vote.getVotePlayerIds();
 		int yesCount = 0;
 		int noCount = 0;
 		int notDecidedCount = 0;
-		for (String playerId : allPlayerIds) {
-			GamePlayer player = game.findPlayer(playerId);
-			// 已投票的计票，还没投票的，不在线的视为弃权，不计票
+		for (String playerId : votePlayerIds) {
 			VoteOption playerOption = vote.findPlayerVoteOption(playerId);
 			if (playerOption != null) {
 				if (playerOption.equals(VoteOption.yes)) {
 					yesCount++;
 				} else if (playerOption.equals(VoteOption.no)) {
 					noCount++;
+				} else if (playerOption.equals(VoteOption.waiver)) {
+					// 弃权就是不计票
 				} else {
 				}
 			} else {
-				if (player.getOnlineState().equals(GamePlayerOnlineState.online)) {
-					notDecidedCount++;
-				}
+				notDecidedCount++;
 			}
 		}
 

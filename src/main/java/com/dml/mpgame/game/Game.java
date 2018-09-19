@@ -2,9 +2,12 @@ package com.dml.mpgame.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.dml.mpgame.game.back.GameBackStrategy;
 import com.dml.mpgame.game.join.GameJoinStrategy;
 import com.dml.mpgame.game.leave.GameLeaveStrategy;
 import com.dml.mpgame.game.player.GamePlayer;
@@ -31,6 +34,7 @@ public abstract class Game {
 	protected Map<String, GamePlayer> idPlayerMap = new HashMap<>();
 
 	private GameLeaveStrategy leaveStrategy;
+	private GameBackStrategy backStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy joinStrategy;
 
@@ -64,6 +68,14 @@ public abstract class Game {
 		leaveStrategy.leave(playerId, this);
 	}
 
+	public GameBackStrategy getBackStrategy() {
+		return backStrategy;
+	}
+
+	public void setBackStrategy(GameBackStrategy backStrategy) {
+		this.backStrategy = backStrategy;
+	}
+
 	public void quit(String playerId) throws Exception {
 		if (!idPlayerMap.containsKey(playerId)) {
 			throw new GamePlayerNotFoundException();
@@ -72,7 +84,7 @@ public abstract class Game {
 	}
 
 	public void back(String playerId) throws Exception {
-		updatePlayerOnlineState(playerId, GamePlayerOnlineState.online);
+		backStrategy.back(playerId, this);
 	}
 
 	public void ready(String playerId) throws Exception {
@@ -151,6 +163,16 @@ public abstract class Game {
 
 	public GamePlayer findPlayer(String playerId) {
 		return idPlayerMap.get(playerId);
+	}
+
+	public Set<String> findOnlinePlayerIds() {
+		Set<String> onlinePlayerIds = new HashSet<>();
+		for (GamePlayer player : idPlayerMap.values()) {
+			if (player.getOnlineState().equals(GamePlayerOnlineState.online)) {
+				onlinePlayerIds.add(player.getId());
+			}
+		}
+		return onlinePlayerIds;
 	}
 
 	public String getId() {

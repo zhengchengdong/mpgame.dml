@@ -98,9 +98,14 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				|| state.name().equals(Finished.name)) {
 			throw new IllegalOperationException();
 		}
-
-		vote = new GameFinishVote(voteCalculator);
+		// 只有在线的人才有资格参加投票
+		Set<String> onlinePlayerIds = findOnlinePlayerIds();
+		vote = new GameFinishVote(voteCalculator, onlinePlayerIds);
 		updateToVotingState();
+	}
+
+	public void joinToVote(String playerId) {
+		vote.join(playerId);
 	}
 
 	private void updateToVotingState() {
@@ -131,7 +136,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	protected abstract void updateToExtendedVotingState();
 
-	private boolean ifVoting() {
+	public boolean ifVoting() {
 		return (vote != null && vote.getResult() == null);
 	}
 
@@ -139,7 +144,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		vote.vote(playerId, option);
 		GamePlayer player = idPlayerMap.get(playerId);
 		updatePlayerToVotedState(player);
-		vote.calculateResult(this);
+		vote.calculateResult();
 		VoteResult voteResult = vote.getResult();
 		if (voteResult != null) {// 出结果了
 			if (voteResult.equals(VoteResult.yes)) {// 通过

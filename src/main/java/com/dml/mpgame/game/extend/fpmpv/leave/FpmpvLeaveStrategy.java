@@ -13,14 +13,14 @@ import com.dml.mpgame.game.player.GamePlayerOnlineState;
  * @author Neo
  *
  */
-public class FpmpvLeaveWithVoteStrategy implements GameLeaveStrategy {
+public class FpmpvLeaveStrategy implements GameLeaveStrategy {
 
 	private String hostPlayerId;
 
-	public FpmpvLeaveWithVoteStrategy() {
+	public FpmpvLeaveStrategy() {
 	}
 
-	public FpmpvLeaveWithVoteStrategy(String hostPlayerId) {
+	public FpmpvLeaveStrategy(String hostPlayerId) {
 		this.hostPlayerId = hostPlayerId;
 	}
 
@@ -33,9 +33,11 @@ public class FpmpvLeaveWithVoteStrategy implements GameLeaveStrategy {
 			} else {// 副机玩家离开就是直接退出
 				game.removePlayer(playerId);
 			}
-		} else {// 开玩之后,离开的时候要投弃权票
+		} else {// 开玩之后,离开的时候要投弃权票(如果在投票的话)
 			FixedPlayersMultipanAndVotetofinishGame fpmpvGame = (FixedPlayersMultipanAndVotetofinishGame) game;
-			fpmpvGame.voteToFinish(playerId, VoteOption.waiver);
+			if (fpmpvGame.ifVoting()) {
+				fpmpvGame.voteToFinish(playerId, VoteOption.waiver);
+			}
 			game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);
 		}
 

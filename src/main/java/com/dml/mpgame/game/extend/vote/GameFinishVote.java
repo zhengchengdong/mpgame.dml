@@ -26,7 +26,7 @@ public class GameFinishVote {
 		if (result != null) {
 			throw new VoteIsFinishedException();
 		}
-		if (playerIdVoteOptionMap.containsKey(playerId)) {
+		if (ifPlayerVoted(playerId)) {
 			throw new PlayerAlreadyVoteException();
 		}
 		playerIdVoteOptionMap.put(playerId, option);
@@ -42,6 +42,14 @@ public class GameFinishVote {
 
 	public VoteOption findPlayerVoteOption(String playerId) {
 		return playerIdVoteOptionMap.get(playerId);
+	}
+
+	public boolean ifPlayerVoted(String playerId) {
+		return playerIdVoteOptionMap.containsKey(playerId);
+	}
+
+	public boolean ifPlayerJoinVote(String playerId) {
+		return votePlayerIds.contains(playerId);
 	}
 
 	public VoteCalculator getCalculator() {

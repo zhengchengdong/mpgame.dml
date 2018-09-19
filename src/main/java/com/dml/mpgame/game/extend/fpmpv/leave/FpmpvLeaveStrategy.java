@@ -35,7 +35,7 @@ public class FpmpvLeaveStrategy implements GameLeaveStrategy {
 			}
 		} else {// 开玩之后,离开的时候要投弃权票(如果在投票的话)
 			FixedPlayersMultipanAndVotetofinishGame fpmpvGame = (FixedPlayersMultipanAndVotetofinishGame) game;
-			if (fpmpvGame.ifVoting()) {
+			if (fpmpvGame.ifVoting() && !fpmpvGame.ifPlayerVoted(playerId)) {
 				fpmpvGame.voteToFinish(playerId, VoteOption.waiver);
 			}
 			game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);

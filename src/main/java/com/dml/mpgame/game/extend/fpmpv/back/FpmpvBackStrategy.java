@@ -18,7 +18,9 @@ public class FpmpvBackStrategy implements GameBackStrategy {
 
 		game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.online);
 		FixedPlayersMultipanAndVotetofinishGame fpmpvGame = (FixedPlayersMultipanAndVotetofinishGame) game;
-		fpmpvGame.joinToVote(playerId);
+		if (!fpmpvGame.ifPlayerJoinVote(playerId)) {
+			fpmpvGame.joinToVote(playerId);
+		}
 
 	}
 

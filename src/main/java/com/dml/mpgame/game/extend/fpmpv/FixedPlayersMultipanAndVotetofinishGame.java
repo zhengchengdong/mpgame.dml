@@ -3,6 +3,7 @@ package com.dml.mpgame.game.extend.fpmpv;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.dml.mpgame.game.Canceled;
 import com.dml.mpgame.game.Finished;
 import com.dml.mpgame.game.Game;
 import com.dml.mpgame.game.IllegalOperationException;
@@ -93,7 +94,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 			throw new VoteAlreadyLaunchedException();
 		}
 
-		if (state.name().equals(FinishedByVote.name) || state.name().equals(Finished.name)) {
+		if (state.name().equals(Canceled.name) || state.name().equals(FinishedByVote.name)
+				|| state.name().equals(Finished.name)) {
 			throw new IllegalOperationException();
 		}
 
@@ -135,9 +137,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	public void voteToFinish(String playerId, VoteOption option) throws Exception {
 		vote.vote(playerId, option);
-		for (GamePlayer player : idPlayerMap.values()) {
-			updatePlayerToVotedState(player);
-		}
+		GamePlayer player = idPlayerMap.get(playerId);
+		updatePlayerToVotedState(player);
 		vote.calculateResult(this);
 		VoteResult voteResult = vote.getResult();
 		if (voteResult != null) {// 出结果了
@@ -177,8 +178,11 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 			}
 		} else {
 			recoveryStateFromExtendedVoting();
+			recoveryPlayersStateFromExtendedVoting();
 		}
 	}
+
+	protected abstract void recoveryPlayersStateFromExtendedVoting() throws Exception;
 
 	protected abstract void recoveryStateFromExtendedVoting() throws Exception;
 

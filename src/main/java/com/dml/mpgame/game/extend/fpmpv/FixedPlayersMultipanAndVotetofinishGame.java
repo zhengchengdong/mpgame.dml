@@ -145,11 +145,11 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 	}
 
 	public boolean ifPlayerVoted(String playerId) {
-		return vote.ifPlayerVoted(playerId);
+		return vote != null && vote.ifPlayerVoted(playerId);
 	}
 
 	public boolean ifPlayerJoinVote(String playerId) {
-		return vote.ifPlayerJoinVote(playerId);
+		return vote != null && vote.ifPlayerJoinVote(playerId);
 	}
 
 	public void voteToFinish(String playerId, VoteOption option) throws Exception {

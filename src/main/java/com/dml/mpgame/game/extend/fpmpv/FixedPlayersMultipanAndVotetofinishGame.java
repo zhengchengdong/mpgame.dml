@@ -25,6 +25,7 @@ import com.dml.mpgame.game.extend.vote.VotingWhenPlaying;
 import com.dml.mpgame.game.extend.vote.player.PlayerPlayingAndVoted;
 import com.dml.mpgame.game.extend.vote.player.PlayerPlayingAndVoting;
 import com.dml.mpgame.game.player.GamePlayer;
+import com.dml.mpgame.game.player.PlayerFinished;
 import com.dml.mpgame.game.player.PlayerPlaying;
 
 /**
@@ -54,6 +55,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 			// 还要判断游戏是否结束
 			if (checkToFinishGame()) {
 				finish();
+				state = new Finished();
+				updateAllPlayersState(new PlayerFinished());
 			} else {
 				finishCurrentPan();
 			}
@@ -160,7 +163,9 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		VoteResult voteResult = vote.getResult();
 		if (voteResult != null) {// 出结果了
 			if (voteResult.equals(VoteResult.yes)) {// 通过
+				finish();
 				state = new FinishedByVote();
+				updateAllPlayersState(new PlayerFinished());
 			} else {// 没通过，恢复到投票前的状态
 				recoveryStateFromVoting();
 			}

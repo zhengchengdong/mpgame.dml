@@ -15,7 +15,6 @@ import com.dml.mpgame.game.player.GamePlayerAlreadyInGameException;
 import com.dml.mpgame.game.player.GamePlayerNotFoundException;
 import com.dml.mpgame.game.player.GamePlayerOnlineState;
 import com.dml.mpgame.game.player.GamePlayerState;
-import com.dml.mpgame.game.player.PlayerFinished;
 import com.dml.mpgame.game.player.PlayerJoined;
 import com.dml.mpgame.game.player.PlayerReadyToStart;
 import com.dml.mpgame.game.ready.GameReadyStrategy;
@@ -143,15 +142,9 @@ public abstract class Game {
 
 	public abstract void start() throws Exception;
 
-	/**
-	 * 正常游戏玩完结束
-	 */
-	public void finish() {
-		state = new Finished();
-		updateAllPlayersState(new PlayerFinished());
-	}
+	public abstract void finish() throws Exception;
 
-	protected void updateAllPlayersState(GamePlayerState playerState) {
+	public void updateAllPlayersState(GamePlayerState playerState) {
 		for (GamePlayer player : idPlayerMap.values()) {
 			player.setState(playerState);
 		}

@@ -60,12 +60,14 @@ public class GameServer {
 		playerIdGameIdMap.put(playerId, gameId);
 	}
 
-	public void finishGameImmediately(String gameId) throws Exception {
+	/**
+	 * 游戏结束，从服务器中注销
+	 */
+	public void finishGame(String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		game.finish();
 		gameIdGameMap.remove(gameId);
 		game.allPlayerIds().forEach((pid) -> playerIdGameIdMap.remove(pid));
 	}
@@ -85,16 +87,6 @@ public class GameServer {
 
 	public String findBindGameId(String playerId) {
 		return playerIdGameIdMap.get(playerId);
-	}
-
-	public void finishGame(String playerId) throws Exception {
-		String gameId = playerIdGameIdMap.get(playerId);
-		if (gameId == null) {
-			throw new PlayerNotInGameException();
-		}
-		Game game = gameIdGameMap.get(gameId);
-		game.finish();
-
 	}
 
 	public Game findGame(String gameId) throws Exception {

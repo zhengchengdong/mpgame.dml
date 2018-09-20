@@ -22,6 +22,8 @@ import com.dml.mpgame.game.extend.vote.VoteCalculator;
 import com.dml.mpgame.game.extend.vote.VoteOption;
 import com.dml.mpgame.game.extend.vote.VoteResult;
 import com.dml.mpgame.game.extend.vote.VotingWhenPlaying;
+import com.dml.mpgame.game.extend.vote.player.PlayerPlayingAndVoted;
+import com.dml.mpgame.game.extend.vote.player.PlayerPlayingAndVoting;
 import com.dml.mpgame.game.player.GamePlayer;
 import com.dml.mpgame.game.player.PlayerPlaying;
 
@@ -123,7 +125,9 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	private void updatePlayerToVotingState(GamePlayer player) {
 		String stateName = player.getState().name();
-		if (stateName.equals(PlayerPanFinished.name)) {
+		if (stateName.equals(PlayerPlaying.name)) {
+			player.setState(new PlayerPlayingAndVoting());
+		} else if (stateName.equals(PlayerPanFinished.name)) {
 			player.setState(new PlayerPanFinishedAndVoting());
 		} else if (stateName.equals(PlayerReadyToStartNextPan.name)) {
 			player.setState(new PlayerReadyToStartNextPanAndVoting());
@@ -165,7 +169,9 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	private void updatePlayerToVotedState(GamePlayer player) {
 		String stateName = player.getState().name();
-		if (stateName.equals(PlayerPanFinishedAndVoting.name)) {
+		if (stateName.equals(PlayerPlayingAndVoting.name)) {
+			player.setState(new PlayerPlayingAndVoted());
+		} else if (stateName.equals(PlayerPanFinishedAndVoting.name)) {
 			player.setState(new PlayerPanFinishedAndVoted());
 		} else if (stateName.equals(PlayerReadyToStartNextPanAndVoting.name)) {
 			player.setState(new PlayerReadyToStartNextPanAndVoted());

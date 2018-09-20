@@ -105,7 +105,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		}
 		// 只有在线的人才有资格参加投票
 		Set<String> onlinePlayerIds = findOnlinePlayerIds();
-		vote = new GameFinishVote(voteCalculator, onlinePlayerIds);
+		vote = new GameFinishVote(playerId, voteCalculator, onlinePlayerIds);
 		updateToVotingState();
 	}
 

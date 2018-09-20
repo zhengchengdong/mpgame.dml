@@ -7,6 +7,8 @@ import java.util.Set;
 
 public class GameFinishVoteValueObject {
 
+	private String sponsorId;
+
 	private Set<String> votePlayerIds;
 
 	private Map<String, VoteOption> playerIdVoteOptionMap;
@@ -16,18 +18,27 @@ public class GameFinishVoteValueObject {
 	public GameFinishVoteValueObject() {
 	}
 
+	public GameFinishVoteValueObject(GameFinishVote vote) {
+		sponsorId = vote.getSponsorId();
+		votePlayerIds = new HashSet<>(vote.getVotePlayerIds());
+		playerIdVoteOptionMap = new HashMap<>(vote.getPlayerIdVoteOptionMap());
+		result = vote.getResult();
+	}
+
+	public String getSponsorId() {
+		return sponsorId;
+	}
+
+	public void setSponsorId(String sponsorId) {
+		this.sponsorId = sponsorId;
+	}
+
 	public Set<String> getVotePlayerIds() {
 		return votePlayerIds;
 	}
 
 	public void setVotePlayerIds(Set<String> votePlayerIds) {
 		this.votePlayerIds = votePlayerIds;
-	}
-
-	public GameFinishVoteValueObject(GameFinishVote vote) {
-		votePlayerIds = new HashSet<>(vote.getVotePlayerIds());
-		playerIdVoteOptionMap = new HashMap<>(vote.getPlayerIdVoteOptionMap());
-		result = vote.getResult();
 	}
 
 	public Map<String, VoteOption> getPlayerIdVoteOptionMap() {

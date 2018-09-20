@@ -6,6 +6,8 @@ import java.util.Set;
 
 public class GameFinishVote {
 
+	private String sponsorId;
+
 	private VoteCalculator calculator;
 
 	private Set<String> votePlayerIds;
@@ -17,7 +19,7 @@ public class GameFinishVote {
 	public GameFinishVote() {
 	}
 
-	public GameFinishVote(VoteCalculator calculator, Set<String> votePlayerIds) {
+	public GameFinishVote(String sponsorId, VoteCalculator calculator, Set<String> votePlayerIds) {
 		this.calculator = calculator;
 		this.votePlayerIds = votePlayerIds;
 	}
@@ -50,6 +52,14 @@ public class GameFinishVote {
 
 	public boolean ifPlayerJoinVote(String playerId) {
 		return votePlayerIds.contains(playerId);
+	}
+
+	public String getSponsorId() {
+		return sponsorId;
+	}
+
+	public void setSponsorId(String sponsorId) {
+		this.sponsorId = sponsorId;
 	}
 
 	public VoteCalculator getCalculator() {

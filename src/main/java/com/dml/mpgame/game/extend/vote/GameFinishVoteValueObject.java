@@ -1,9 +1,13 @@
 package com.dml.mpgame.game.extend.vote;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class GameFinishVoteValueObject {
+
+	private Set<String> votePlayerIds;
 
 	private Map<String, VoteOption> playerIdVoteOptionMap;
 
@@ -12,7 +16,16 @@ public class GameFinishVoteValueObject {
 	public GameFinishVoteValueObject() {
 	}
 
+	public Set<String> getVotePlayerIds() {
+		return votePlayerIds;
+	}
+
+	public void setVotePlayerIds(Set<String> votePlayerIds) {
+		this.votePlayerIds = votePlayerIds;
+	}
+
 	public GameFinishVoteValueObject(GameFinishVote vote) {
+		votePlayerIds = new HashSet<>(vote.getVotePlayerIds());
 		playerIdVoteOptionMap = new HashMap<>(vote.getPlayerIdVoteOptionMap());
 		result = vote.getResult();
 	}

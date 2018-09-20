@@ -20,6 +20,7 @@ public class GameFinishVote {
 	}
 
 	public GameFinishVote(String sponsorId, VoteCalculator calculator, Set<String> votePlayerIds) {
+		this.sponsorId = sponsorId;
 		this.calculator = calculator;
 		this.votePlayerIds = votePlayerIds;
 	}

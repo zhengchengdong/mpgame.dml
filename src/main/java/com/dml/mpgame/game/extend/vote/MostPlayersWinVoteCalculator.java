@@ -37,7 +37,7 @@ public class MostPlayersWinVoteCalculator implements VoteCalculator {
 				vote.setResult(VoteResult.yes);
 			}
 		} else {
-			if (yesCount <= (noCount + notDecidedCount)) {
+			if ((yesCount + notDecidedCount) <= noCount) {
 				vote.setResult(VoteResult.no);
 			}
 		}

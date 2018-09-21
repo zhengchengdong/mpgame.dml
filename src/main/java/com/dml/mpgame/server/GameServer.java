@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.dml.mpgame.game.Game;
 import com.dml.mpgame.game.GameNotFoundException;
+import com.dml.mpgame.game.GameValueObject;
 import com.dml.mpgame.game.player.PlayerNotInGameException;
 
 public class GameServer {
@@ -23,41 +24,44 @@ public class GameServer {
 		playerIdGameIdMap.put(playerId, newGame.getId());
 	}
 
-	public void join(String playerId, String gameId) throws Exception {
+	public <T extends GameValueObject> T join(String playerId, String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		game.join(playerId);
+		T valueObject = game.join(playerId);
 		playerIdGameIdMap.put(playerId, gameId);
+		return valueObject;
 	}
 
-	public void ready(String playerId) throws Exception {
+	public <T extends GameValueObject> T ready(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new PlayerNotInGameException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		game.ready(playerId);
+		return game.ready(playerId);
 	}
 
-	public void leave(String playerId) throws Exception {
+	public <T extends GameValueObject> T leave(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new GameNotFoundException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		game.leave(playerId);
+		T valueObject = game.leave(playerId);
 		playerIdGameIdMap.remove(playerId);
+		return valueObject;
 	}
 
-	public void back(String playerId, String gameId) throws Exception {
+	public <T extends GameValueObject> T back(String playerId, String gameId) throws Exception {
 		Game game = gameIdGameMap.get(gameId);
 		if (game == null) {
 			throw new GameNotFoundException();
 		}
-		game.back(playerId);
+		T valueObject = game.back(playerId);
 		playerIdGameIdMap.put(playerId, gameId);
+		return valueObject;
 	}
 
 	/**

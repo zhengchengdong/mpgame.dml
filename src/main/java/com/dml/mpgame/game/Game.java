@@ -56,15 +56,19 @@ public abstract class Game {
 		return idPlayerMap.size();
 	}
 
-	public void join(String playerId) throws Exception {
+	public <T extends GameValueObject> T join(String playerId) throws Exception {
 		if (idPlayerMap.containsKey(playerId)) {
 			throw new GamePlayerAlreadyInGameException();
 		}
 		joinStrategy.join(playerId, this);
+		return toValueObject();
 	}
 
-	public void leave(String playerId) throws Exception {
+	protected abstract <T extends GameValueObject> T toValueObject();
+
+	public <T extends GameValueObject> T leave(String playerId) throws Exception {
 		leaveStrategy.leave(playerId, this);
+		return toValueObject();
 	}
 
 	public GameBackStrategy getBackStrategy() {
@@ -82,12 +86,14 @@ public abstract class Game {
 		idPlayerMap.remove(playerId);
 	}
 
-	public void back(String playerId) throws Exception {
+	public <T extends GameValueObject> T back(String playerId) throws Exception {
 		backStrategy.back(playerId, this);
+		return toValueObject();
 	}
 
-	public void ready(String playerId) throws Exception {
+	public <T extends GameValueObject> T ready(String playerId) throws Exception {
 		readyStrategy.ready(playerId, this);
+		return toValueObject();
 	}
 
 	public void cancel() throws Exception {

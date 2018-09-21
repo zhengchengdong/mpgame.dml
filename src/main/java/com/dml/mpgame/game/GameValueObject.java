@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dml.mpgame.game.player.GamePlayerOnlineState;
+import com.dml.mpgame.game.player.GamePlayerState;
 
 public abstract class GameValueObject {
 
@@ -24,6 +25,15 @@ public abstract class GameValueObject {
 		for (GamePlayerValueObject player : players) {
 			if (player.getId().equals(playerId)) {
 				return player.getOnlineState();
+			}
+		}
+		return null;
+	}
+
+	public GamePlayerState findPlayerState(String playerId) {
+		for (GamePlayerValueObject player : players) {
+			if (player.getId().equals(playerId)) {
+				return player.getState();
 			}
 		}
 		return null;

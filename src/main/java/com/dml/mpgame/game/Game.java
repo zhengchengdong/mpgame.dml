@@ -32,7 +32,8 @@ public abstract class Game {
 	protected GameState state;
 	protected Map<String, GamePlayer> idPlayerMap = new HashMap<>();
 
-	private GameLeaveStrategy leaveStrategy;
+	private GameLeaveStrategy leaveStrategyBeforeStart;
+	private GameLeaveStrategy leaveStrategyAfterStart;
 	private GameBackStrategy backStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy joinStrategy;
@@ -67,7 +68,11 @@ public abstract class Game {
 	protected abstract <T extends GameValueObject> T toValueObject();
 
 	public <T extends GameValueObject> T leave(String playerId) throws Exception {
-		leaveStrategy.leave(playerId, this);
+		if (state.name().equals(WaitingStart.name)) {
+			leaveStrategyBeforeStart.leave(playerId, this);
+		} else {
+			leaveStrategyAfterStart.leave(playerId, this);
+		}
 		return toValueObject();
 	}
 
@@ -206,12 +211,20 @@ public abstract class Game {
 		this.idPlayerMap = idPlayerMap;
 	}
 
-	public GameLeaveStrategy getLeaveStrategy() {
-		return leaveStrategy;
+	public GameLeaveStrategy getLeaveStrategyBeforeStart() {
+		return leaveStrategyBeforeStart;
 	}
 
-	public void setLeaveStrategy(GameLeaveStrategy leaveStrategy) {
-		this.leaveStrategy = leaveStrategy;
+	public void setLeaveStrategyBeforeStart(GameLeaveStrategy leaveStrategyBeforeStart) {
+		this.leaveStrategyBeforeStart = leaveStrategyBeforeStart;
+	}
+
+	public GameLeaveStrategy getLeaveStrategyAfterStart() {
+		return leaveStrategyAfterStart;
+	}
+
+	public void setLeaveStrategyAfterStart(GameLeaveStrategy leaveStrategyAfterStart) {
+		this.leaveStrategyAfterStart = leaveStrategyAfterStart;
 	}
 
 	public GameReadyStrategy getReadyStrategy() {

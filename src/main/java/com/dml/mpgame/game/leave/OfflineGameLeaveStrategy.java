@@ -1,6 +1,7 @@
 package com.dml.mpgame.game.leave;
 
 import com.dml.mpgame.game.Game;
+import com.dml.mpgame.game.player.GamePlayer;
 import com.dml.mpgame.game.player.GamePlayerOnlineState;
 
 /**
@@ -13,7 +14,10 @@ public class OfflineGameLeaveStrategy implements GameLeaveStrategy {
 
 	@Override
 	public void leave(String playerId, Game game) throws Exception {
-		game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);
+		GamePlayer player = game.findPlayer(playerId);
+		if (player != null && !player.getOnlineState().equals(GamePlayerOnlineState.offline)) {
+			game.updatePlayerOnlineState(playerId, GamePlayerOnlineState.offline);
+		}
 	}
 
 }

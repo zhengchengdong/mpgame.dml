@@ -32,8 +32,24 @@ public abstract class Game {
 	protected GameState state;
 	protected Map<String, GamePlayer> idPlayerMap = new HashMap<>();
 
-	private GameLeaveStrategy leaveStrategyBeforeStart;
-	private GameLeaveStrategy leaveStrategyAfterStart;
+	/**
+	 * 玩家主动要求离开
+	 */
+	private GameLeaveStrategy leaveByPlayerStrategyBeforeStart;
+	private GameLeaveStrategy leaveByPlayerStrategyAfterStart;
+
+	/**
+	 * 挂起导致的离开。(挂起是玩家主观导致的，比如手机按黑。但是挂起的主要意图是“暂停一下”)
+	 */
+	private GameLeaveStrategy leaveByHangupStrategyBeforeStart;
+	private GameLeaveStrategy leaveByHangupStrategyAfterStart;
+
+	/**
+	 * 由于离线而导致的离开。(导致离线的都是不可控的客观原因，比如网络断开、手机爆炸)
+	 */
+	private GameLeaveStrategy leaveByOfflineStrategyBeforeStart;
+	private GameLeaveStrategy leaveByOfflineStrategyAfterStart;
+
 	private GameBackStrategy backStrategy;
 	private GameReadyStrategy readyStrategy;
 	private GameJoinStrategy joinStrategy;
@@ -65,13 +81,47 @@ public abstract class Game {
 		return toValueObject();
 	}
 
-	protected abstract <T extends GameValueObject> T toValueObject();
+	public abstract <T extends GameValueObject> T toValueObject();
 
-	public <T extends GameValueObject> T leave(String playerId) throws Exception {
+	public <T extends GameValueObject> T leaveByPlayer(String playerId) throws Exception {
 		if (state.name().equals(WaitingStart.name)) {
-			leaveStrategyBeforeStart.leave(playerId, this);
+			leaveByPlayerStrategyBeforeStart.leave(playerId, this);
 		} else {
-			leaveStrategyAfterStart.leave(playerId, this);
+			leaveByPlayerStrategyAfterStart.leave(playerId, this);
+		}
+		return toValueObject();
+	}
+
+	public GameLeaveStrategy getLeaveByHangupStrategyBeforeStart() {
+		return leaveByHangupStrategyBeforeStart;
+	}
+
+	public void setLeaveByHangupStrategyBeforeStart(GameLeaveStrategy leaveByHangupStrategyBeforeStart) {
+		this.leaveByHangupStrategyBeforeStart = leaveByHangupStrategyBeforeStart;
+	}
+
+	public GameLeaveStrategy getLeaveByHangupStrategyAfterStart() {
+		return leaveByHangupStrategyAfterStart;
+	}
+
+	public void setLeaveByHangupStrategyAfterStart(GameLeaveStrategy leaveByHangupStrategyAfterStart) {
+		this.leaveByHangupStrategyAfterStart = leaveByHangupStrategyAfterStart;
+	}
+
+	public <T extends GameValueObject> T leaveByOffline(String playerId) throws Exception {
+		if (state.name().equals(WaitingStart.name)) {
+			leaveByOfflineStrategyBeforeStart.leave(playerId, this);
+		} else {
+			leaveByOfflineStrategyAfterStart.leave(playerId, this);
+		}
+		return toValueObject();
+	}
+
+	public <T extends GameValueObject> T leaveByHangup(String playerId) throws Exception {
+		if (state.name().equals(WaitingStart.name)) {
+			leaveByHangupStrategyBeforeStart.leave(playerId, this);
+		} else {
+			leaveByHangupStrategyAfterStart.leave(playerId, this);
 		}
 		return toValueObject();
 	}
@@ -211,20 +261,36 @@ public abstract class Game {
 		this.idPlayerMap = idPlayerMap;
 	}
 
-	public GameLeaveStrategy getLeaveStrategyBeforeStart() {
-		return leaveStrategyBeforeStart;
+	public GameLeaveStrategy getLeaveByPlayerStrategyBeforeStart() {
+		return leaveByPlayerStrategyBeforeStart;
 	}
 
-	public void setLeaveStrategyBeforeStart(GameLeaveStrategy leaveStrategyBeforeStart) {
-		this.leaveStrategyBeforeStart = leaveStrategyBeforeStart;
+	public void setLeaveByPlayerStrategyBeforeStart(GameLeaveStrategy leaveByPlayerStrategyBeforeStart) {
+		this.leaveByPlayerStrategyBeforeStart = leaveByPlayerStrategyBeforeStart;
 	}
 
-	public GameLeaveStrategy getLeaveStrategyAfterStart() {
-		return leaveStrategyAfterStart;
+	public GameLeaveStrategy getLeaveByPlayerStrategyAfterStart() {
+		return leaveByPlayerStrategyAfterStart;
 	}
 
-	public void setLeaveStrategyAfterStart(GameLeaveStrategy leaveStrategyAfterStart) {
-		this.leaveStrategyAfterStart = leaveStrategyAfterStart;
+	public void setLeaveByPlayerStrategyAfterStart(GameLeaveStrategy leaveByPlayerStrategyAfterStart) {
+		this.leaveByPlayerStrategyAfterStart = leaveByPlayerStrategyAfterStart;
+	}
+
+	public GameLeaveStrategy getLeaveByOfflineStrategyBeforeStart() {
+		return leaveByOfflineStrategyBeforeStart;
+	}
+
+	public void setLeaveByOfflineStrategyBeforeStart(GameLeaveStrategy leaveByOfflineStrategyBeforeStart) {
+		this.leaveByOfflineStrategyBeforeStart = leaveByOfflineStrategyBeforeStart;
+	}
+
+	public GameLeaveStrategy getLeaveByOfflineStrategyAfterStart() {
+		return leaveByOfflineStrategyAfterStart;
+	}
+
+	public void setLeaveByOfflineStrategyAfterStart(GameLeaveStrategy leaveByOfflineStrategyAfterStart) {
+		this.leaveByOfflineStrategyAfterStart = leaveByOfflineStrategyAfterStart;
 	}
 
 	public GameReadyStrategy getReadyStrategy() {

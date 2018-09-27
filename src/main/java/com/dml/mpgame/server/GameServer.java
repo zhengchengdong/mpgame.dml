@@ -43,13 +43,35 @@ public class GameServer {
 		return game.ready(playerId);
 	}
 
-	public <T extends GameValueObject> T leave(String playerId) throws Exception {
+	public <T extends GameValueObject> T leaveByPlayer(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new GameNotFoundException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		T valueObject = game.leave(playerId);
+		T valueObject = game.leaveByPlayer(playerId);
+		playerIdGameIdMap.remove(playerId);
+		return valueObject;
+	}
+
+	public <T extends GameValueObject> T leaveByOffline(String playerId) throws Exception {
+		String gameId = playerIdGameIdMap.get(playerId);
+		if (gameId == null) {
+			throw new GameNotFoundException();
+		}
+		Game game = gameIdGameMap.get(gameId);
+		T valueObject = game.leaveByOffline(playerId);
+		playerIdGameIdMap.remove(playerId);
+		return valueObject;
+	}
+
+	public <T extends GameValueObject> T leaveByHangup(String playerId) throws Exception {
+		String gameId = playerIdGameIdMap.get(playerId);
+		if (gameId == null) {
+			throw new GameNotFoundException();
+		}
+		Game game = gameIdGameMap.get(gameId);
+		T valueObject = game.leaveByHangup(playerId);
 		playerIdGameIdMap.remove(playerId);
 		return valueObject;
 	}

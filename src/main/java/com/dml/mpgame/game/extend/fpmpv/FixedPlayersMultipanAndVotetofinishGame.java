@@ -19,6 +19,7 @@ import com.dml.mpgame.game.extend.vote.FinishedByVote;
 import com.dml.mpgame.game.extend.vote.GameFinishVote;
 import com.dml.mpgame.game.extend.vote.VoteAlreadyLaunchedException;
 import com.dml.mpgame.game.extend.vote.VoteCalculator;
+import com.dml.mpgame.game.extend.vote.VoteNotPassWhenPlaying;
 import com.dml.mpgame.game.extend.vote.VoteOption;
 import com.dml.mpgame.game.extend.vote.VoteResult;
 import com.dml.mpgame.game.extend.vote.VotingWhenPlaying;
@@ -73,6 +74,9 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 	protected abstract boolean checkToFinishCurrentPan() throws Exception;
 
 	public void readyToNextPan(String playerId) throws Exception {
+		if (state.name().equals(VoteNotPassWhenWaitingNextPan.name)) {
+			state = new WaitingNextPan();
+		}
 		if (state.name().equals(WaitingNextPan.name)) {
 			readyToStartNextPanPlayerIdsSet.add(playerId);
 			updatePlayerState(playerId, new PlayerReadyToStartNextPan());
@@ -167,7 +171,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				state = new FinishedByVote();
 				updateAllPlayersState(new PlayerFinished());
 			} else {// 没通过，恢复到投票前的状态
-				recoveryStateFromVoting();
+				updateToVoteNotPassState();
 			}
 		}
 	}
@@ -187,12 +191,12 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	protected abstract void updatePlayerToExtendedVotedState(GamePlayer player);
 
-	private void recoveryStateFromVoting() throws Exception {
+	private void updateToVoteNotPassState() throws Exception {
 		if (state.name().equals(VotingWhenPlaying.name)) {
-			state = new Playing();
+			state = new VoteNotPassWhenPlaying();
 			updateAllPlayersState(new PlayerPlaying());
 		} else if (state.name().equals(VotingWhenWaitingNextPan.name)) {
-			state = new WaitingNextPan();
+			state = new VoteNotPassWhenWaitingNextPan();
 			for (String playerId : idPlayerMap.keySet()) {
 				if (readyToStartNextPanPlayerIdsSet.contains(playerId)) {
 					updatePlayerState(playerId, new PlayerReadyToStartNextPan());
@@ -201,14 +205,14 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				}
 			}
 		} else {
-			recoveryStateFromExtendedVoting();
+			updateToVoteNotPassStateFromExtendedVoting();
 			recoveryPlayersStateFromExtendedVoting();
 		}
 	}
 
 	protected abstract void recoveryPlayersStateFromExtendedVoting() throws Exception;
 
-	protected abstract void recoveryStateFromExtendedVoting() throws Exception;
+	protected abstract void updateToVoteNotPassStateFromExtendedVoting() throws Exception;
 
 	public int getPanNo() {
 		return panNo;

@@ -170,7 +170,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				finish();
 				state = new FinishedByVote();
 				updateAllPlayersState(new PlayerFinished());
-			} else {// 没通过，恢复到投票前的状态
+			} else {
 				updateToVoteNotPassState();
 			}
 		}

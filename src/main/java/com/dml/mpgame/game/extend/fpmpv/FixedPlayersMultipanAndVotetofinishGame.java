@@ -121,9 +121,10 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		for (GamePlayer player : idPlayerMap.values()) {
 			updatePlayerToVotingState(player);
 		}
-		if (state.name().equals(Playing.name)) {
+		if (state.name().equals(Playing.name) || state.name().equals(VoteNotPassWhenPlaying.name)) {
 			state = new VotingWhenPlaying();
-		} else if (state.name().equals(WaitingNextPan.name)) {
+		} else if (state.name().equals(WaitingNextPan.name)
+				|| state.name().equals(VoteNotPassWhenWaitingNextPan.name)) {
 			state = new VotingWhenWaitingNextPan();
 		} else {
 			updateToExtendedVotingState();

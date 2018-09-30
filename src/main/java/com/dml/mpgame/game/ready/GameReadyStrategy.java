@@ -4,6 +4,6 @@ import com.dml.mpgame.game.Game;
 
 public interface GameReadyStrategy {
 
-	public void ready(String playerId, Game game) throws Exception;
+	public void ready(String playerId, Game game, long currentTime) throws Exception;
 
 }

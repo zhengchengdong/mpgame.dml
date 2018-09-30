@@ -34,13 +34,13 @@ public class GameServer {
 		return valueObject;
 	}
 
-	public <T extends GameValueObject> T ready(String playerId) throws Exception {
+	public <T extends GameValueObject> T ready(String playerId, long currentTime) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {
 			throw new PlayerNotInGameException();
 		}
 		Game game = gameIdGameMap.get(gameId);
-		return game.ready(playerId);
+		return game.ready(playerId, currentTime);
 	}
 
 	public <T extends GameValueObject> T leaveByPlayer(String playerId) throws Exception {

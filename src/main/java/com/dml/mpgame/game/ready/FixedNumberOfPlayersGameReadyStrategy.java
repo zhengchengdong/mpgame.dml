@@ -18,7 +18,7 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 	}
 
 	@Override
-	public void ready(String playerId, Game game) throws Exception {
+	public void ready(String playerId, Game game, long currentTime) throws Exception {
 
 		if (!game.getState().name().equals(WaitingStart.name)) {
 			throw new IllegalOperationException();
@@ -31,7 +31,7 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 		int playerCounts = game.playerCounts();
 		if (playerCounts == fixedNumberOfPlayers) {// 达到游戏规定人数
 			if (game.allPlayersReady()) {// 并且所有玩家都准备好了，那就开始
-				game.start();
+				game.start(currentTime);
 			}
 		}
 	}

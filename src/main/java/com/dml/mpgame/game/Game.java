@@ -146,8 +146,8 @@ public abstract class Game {
 		return toValueObject();
 	}
 
-	public <T extends GameValueObject> T ready(String playerId) throws Exception {
-		readyStrategy.ready(playerId, this);
+	public <T extends GameValueObject> T ready(String playerId, long currentTime) throws Exception {
+		readyStrategy.ready(playerId, this, currentTime);
 		return toValueObject();
 	}
 
@@ -201,7 +201,7 @@ public abstract class Game {
 		return true;
 	}
 
-	public abstract void start() throws Exception;
+	public abstract void start(long currentTime) throws Exception;
 
 	public abstract void finish() throws Exception;
 

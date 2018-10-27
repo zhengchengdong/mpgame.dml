@@ -21,6 +21,7 @@ import com.dml.mpgame.game.extend.vote.VoteAlreadyLaunchedException;
 import com.dml.mpgame.game.extend.vote.VoteCalculator;
 import com.dml.mpgame.game.extend.vote.VoteNotPassWhenPlaying;
 import com.dml.mpgame.game.extend.vote.VoteOption;
+import com.dml.mpgame.game.extend.vote.VotePlayersFilter;
 import com.dml.mpgame.game.extend.vote.VoteResult;
 import com.dml.mpgame.game.extend.vote.VotingWhenPlaying;
 import com.dml.mpgame.game.extend.vote.player.PlayerPlayingAndVoted;
@@ -43,6 +44,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 	private int panNo = 1;
 
 	private int fixedPlayerCount;
+
+	private VotePlayersFilter votePlayersFilter;
 
 	private GameFinishVote vote;
 
@@ -107,9 +110,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				|| state.name().equals(Finished.name)) {
 			throw new IllegalOperationException();
 		}
-		// 只有在线的人才有资格参加投票
-		Set<String> onlinePlayerIds = findOnlinePlayerIds();
-		vote = new GameFinishVote(playerId, voteCalculator, onlinePlayerIds);
+		Set<String> votePlayerIds = votePlayersFilter.filter(this);
+		vote = new GameFinishVote(playerId, voteCalculator, votePlayerIds);
 		updateToVotingState();
 	}
 
@@ -229,6 +231,14 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	public void setFixedPlayerCount(int fixedPlayerCount) {
 		this.fixedPlayerCount = fixedPlayerCount;
+	}
+
+	public VotePlayersFilter getVotePlayersFilter() {
+		return votePlayersFilter;
+	}
+
+	public void setVotePlayersFilter(VotePlayersFilter votePlayersFilter) {
+		this.votePlayersFilter = votePlayersFilter;
 	}
 
 	public GameFinishVote getVote() {

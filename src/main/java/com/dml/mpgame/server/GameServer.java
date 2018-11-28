@@ -95,7 +95,11 @@ public class GameServer {
 			throw new GameNotFoundException();
 		}
 		gameIdGameMap.remove(gameId);
-		game.allPlayerIds().forEach((pid) -> playerIdGameIdMap.remove(pid));
+		game.allPlayerIds().forEach((pid) -> {
+			if (gameId.equals(playerIdGameIdMap.get(pid))) {
+				playerIdGameIdMap.remove(pid);
+			}
+		});
 	}
 
 	public List<String> findAllPlayerIdsForGame(String gameId) {

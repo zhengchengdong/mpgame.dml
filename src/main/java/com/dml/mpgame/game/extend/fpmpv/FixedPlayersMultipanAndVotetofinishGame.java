@@ -19,6 +19,7 @@ import com.dml.mpgame.game.extend.vote.FinishedByVote;
 import com.dml.mpgame.game.extend.vote.GameFinishVote;
 import com.dml.mpgame.game.extend.vote.VoteAlreadyLaunchedException;
 import com.dml.mpgame.game.extend.vote.VoteCalculator;
+import com.dml.mpgame.game.extend.vote.VoteNotFoundException;
 import com.dml.mpgame.game.extend.vote.VoteNotPassWhenPlaying;
 import com.dml.mpgame.game.extend.vote.VoteOption;
 import com.dml.mpgame.game.extend.vote.VotePlayersFilter;
@@ -100,7 +101,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 
 	protected abstract void startNextPan() throws Exception;
 
-	public void launchVoteToFinish(String playerId, VoteCalculator voteCalculator) throws Exception {
+	public void launchVoteToFinish(String playerId, VoteCalculator voteCalculator, long currentTime, long keepTime)
+			throws Exception {
 
 		if (ifVoting()) {
 			throw new VoteAlreadyLaunchedException();
@@ -111,7 +113,7 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 			throw new IllegalOperationException();
 		}
 		Set<String> votePlayerIds = votePlayersFilter.filter(this);
-		vote = new GameFinishVote(playerId, voteCalculator, votePlayerIds);
+		vote = new GameFinishVote(playerId, voteCalculator, votePlayerIds, currentTime, keepTime);
 		updateToVotingState();
 	}
 
@@ -166,6 +168,27 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 		vote.vote(playerId, option);
 		GamePlayer player = idPlayerMap.get(playerId);
 		updatePlayerToVotedState(player);
+		vote.calculateResult();
+		VoteResult voteResult = vote.getResult();
+		if (voteResult != null) {// 出结果了
+			if (voteResult.equals(VoteResult.yes)) {// 通过
+				finish();
+				state = new FinishedByVote();
+				updateAllPlayersState(new PlayerFinished());
+			} else {
+				updateToVoteNotPassState();
+			}
+		}
+	}
+
+	/**
+	 * 投票时间到，未投票的视为弃权
+	 */
+	public void voteToFinishByTimeOver(long currentTime) throws Exception {
+		if (!ifVoting()) {
+			throw new VoteNotFoundException();
+		}
+		vote.voteByTimeOver(currentTime);
 		vote.calculateResult();
 		VoteResult voteResult = vote.getResult();
 		if (voteResult != null) {// 出结果了

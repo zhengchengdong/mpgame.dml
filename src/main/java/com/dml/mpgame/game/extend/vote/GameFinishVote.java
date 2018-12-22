@@ -16,13 +16,20 @@ public class GameFinishVote {
 
 	private VoteResult result;
 
+	private long startTime;// 投票发起时间
+
+	private long endTime;// 投票过期时间
+
 	public GameFinishVote() {
 	}
 
-	public GameFinishVote(String sponsorId, VoteCalculator calculator, Set<String> votePlayerIds) {
+	public GameFinishVote(String sponsorId, VoteCalculator calculator, Set<String> votePlayerIds, long currentTime,
+			long keepTime) {
 		this.sponsorId = sponsorId;
 		this.calculator = calculator;
 		this.votePlayerIds = votePlayerIds;
+		startTime = currentTime;
+		endTime = startTime + keepTime;
 	}
 
 	public void vote(String playerId, VoteOption option) throws Exception {
@@ -33,6 +40,23 @@ public class GameFinishVote {
 			throw new PlayerAlreadyVoteException();
 		}
 		playerIdVoteOptionMap.put(playerId, option);
+	}
+
+	/**
+	 * 投票时间结束，未投票的视为弃权
+	 */
+	public void voteByTimeOver(long currentTime) throws Exception {
+		if (result != null) {
+			throw new VoteIsFinishedException();
+		}
+		if (currentTime < endTime) {
+			throw new VoteTimeIsNotExhaustedException();
+		}
+		for (String playerId : votePlayerIds) {
+			if (!playerIdVoteOptionMap.containsKey(playerId)) {
+				playerIdVoteOptionMap.put(playerId, VoteOption.waiver);
+			}
+		}
 	}
 
 	public void join(String playerId) {
@@ -93,6 +117,22 @@ public class GameFinishVote {
 
 	public void setResult(VoteResult result) {
 		this.result = result;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
 	}
 
 }

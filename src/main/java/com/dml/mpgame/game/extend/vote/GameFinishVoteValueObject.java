@@ -15,6 +15,10 @@ public class GameFinishVoteValueObject {
 
 	private VoteResult result;
 
+	private long startTime;
+
+	private long endTime;
+
 	public GameFinishVoteValueObject() {
 	}
 
@@ -23,6 +27,8 @@ public class GameFinishVoteValueObject {
 		votePlayerIds = new HashSet<>(vote.getVotePlayerIds());
 		playerIdVoteOptionMap = new HashMap<>(vote.getPlayerIdVoteOptionMap());
 		result = vote.getResult();
+		startTime = vote.getStartTime();
+		endTime = vote.getEndTime();
 	}
 
 	public String getSponsorId() {
@@ -55,6 +61,22 @@ public class GameFinishVoteValueObject {
 
 	public void setResult(VoteResult result) {
 		this.result = result;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
 	}
 
 }

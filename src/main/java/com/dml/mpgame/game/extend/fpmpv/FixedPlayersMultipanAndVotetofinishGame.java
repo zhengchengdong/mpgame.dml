@@ -112,7 +112,8 @@ public abstract class FixedPlayersMultipanAndVotetofinishGame extends Game {
 				|| state.name().equals(Finished.name)) {
 			throw new IllegalOperationException();
 		}
-		Set<String> votePlayerIds = votePlayersFilter.filter(this);
+		// Set<String> votePlayerIds = votePlayersFilter.filter(this);
+		Set<String> votePlayerIds = new HashSet<>(allPlayerIds());
 		vote = new GameFinishVote(playerId, voteCalculator, votePlayerIds, currentTime, keepTime);
 		updateToVotingState();
 	}

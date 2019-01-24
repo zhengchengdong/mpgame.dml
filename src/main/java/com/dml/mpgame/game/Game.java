@@ -151,6 +151,11 @@ public abstract class Game {
 		return toValueObject();
 	}
 
+	public <T extends GameValueObject> T cancelReady(String playerId, long currentTime) throws Exception {
+		readyStrategy.cancelReady(playerId, this, currentTime);
+		return toValueObject();
+	}
+
 	public void cancel() throws Exception {
 		if (state.name().equals(WaitingStart.name)) {
 			state = new Canceled();

@@ -36,4 +36,15 @@ public class FixedNumberOfPlayersGameReadyStrategy implements GameReadyStrategy 
 		}
 	}
 
+	@Override
+	public void cancelReady(String playerId, Game game, long currentTime) throws Exception {
+		if (!game.getState().name().equals(WaitingStart.name)) {
+			throw new IllegalOperationException();
+		}
+		if (!game.playerState(playerId).name().equals(PlayerReadyToStart.name)) {
+			throw new IllegalOperationException();
+		}
+		game.updatePlayerState(playerId, new PlayerJoined());
+	}
+
 }

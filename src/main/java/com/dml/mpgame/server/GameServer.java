@@ -43,6 +43,15 @@ public class GameServer {
 		return game.ready(playerId, currentTime);
 	}
 
+	public <T extends GameValueObject> T cancelReady(String playerId, long currentTime) throws Exception {
+		String gameId = playerIdGameIdMap.get(playerId);
+		if (gameId == null) {
+			throw new PlayerNotInGameException();
+		}
+		Game game = gameIdGameMap.get(gameId);
+		return game.cancelReady(playerId, currentTime);
+	}
+
 	public <T extends GameValueObject> T leaveByPlayer(String playerId) throws Exception {
 		String gameId = playerIdGameIdMap.get(playerId);
 		if (gameId == null) {

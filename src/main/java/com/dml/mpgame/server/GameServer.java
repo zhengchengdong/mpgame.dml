@@ -95,6 +95,15 @@ public class GameServer {
 		return valueObject;
 	}
 
+	public <T extends GameValueObject> T getInfo(String playerId, String gameId) throws Exception {
+		Game game = gameIdGameMap.get(gameId);
+		if (game == null) {
+			throw new GameNotFoundException();
+		}
+		T valueObject = game.toValueObject();
+		return valueObject;
+	}
+
 	/**
 	 * 游戏结束，从服务器中注销
 	 */

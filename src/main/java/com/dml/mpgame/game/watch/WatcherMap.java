@@ -81,6 +81,6 @@ public class WatcherMap {
     }
 
     public Map<String, Watcher> getWatch(String gameId) {
-        return gameMap.get(gameId);
+        return new HashMap<>(gameMap.get(gameId));
     }
 }

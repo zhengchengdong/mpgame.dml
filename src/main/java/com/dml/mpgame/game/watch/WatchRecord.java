@@ -11,6 +11,14 @@ public class WatchRecord {
     private String gameId; // game server id
     private List<Watcher> watchers;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getGameId() {
         return gameId;
     }

@@ -7,6 +7,7 @@ import java.util.List;
  * @Description: 观战记录bean
  */
 public class WatchRecord {
+    private String id;
     private String gameId; // game server id
     private List<Watcher> watchers;
 

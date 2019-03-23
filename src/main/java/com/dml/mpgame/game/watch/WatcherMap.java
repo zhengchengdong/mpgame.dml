@@ -81,6 +81,9 @@ public class WatcherMap {
     }
 
     public Map<String, Watcher> getWatch(String gameId) {
+        if (gameMap.get(gameId) == null) {
+            return new HashMap<>();
+        }
         return new HashMap<>(gameMap.get(gameId));
     }
 }

@@ -129,7 +129,12 @@ public class GameServer {
 		}
 	}
 
-	public void bindPlayer(String playerId, String gameId) {
+	public void bindPlayer(String playerId, String gameId) throws Exception {
+		Game game = gameIdGameMap.get(gameId);
+		if (game == null) {
+			throw new GameNotFoundException();
+		}
+		game.back(playerId);
 		playerIdGameIdMap.put(playerId, gameId);
 	}
 
